@@ -1,0 +1,15 @@
+
+<mujoco model="franka_panda v200">
+    
+    <include file="/assets/assets.xml"/>
+    <include file='/assets/scene.xml'/>
+    <compiler meshdir=""/>
+
+    <worldbody>
+        <include file="/assets/chain.xml"/>
+        <include file="/assets/others.xml"/>
+    </worldbody>
+
+    <include file='/assets/actuator_position.xml'/>
+
+</mujoco>
