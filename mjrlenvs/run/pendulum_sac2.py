@@ -8,7 +8,7 @@ class Args(DefaultArgs):
 
     ############################## RUN #########################################################
 
-    TRAINING_ID = "prova2"   
+    RUN_ID = "prova2"   
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes
@@ -21,6 +21,7 @@ class Args(DefaultArgs):
     EARLY_STOP = True
     EARLY_STOP_MAX_NO_IMPROVEMENTS = 3
     EARLY_STOP_MIN_EVALS = 5
+    SAVE_ALL_TRAINING_LOGS = False
  
     ########################## ENVIRONMENT ######################################################
 
@@ -35,7 +36,9 @@ class Args(DefaultArgs):
               max_episode_length=EVAL_EPISODE_HORIZON, 
               init_joint_config = [0]
             )
-    
+
+    NORMALIZE_ENV = dict(training=True, norm_obs=True, norm_reward=True, clip_obs=10, clip_reward=10) 
+
     ENV_EVAL_RENDERING = False
 
     ############################## AGENT #######################################################

@@ -1,4 +1,5 @@
  
+from ast import arg
 from pickle import TRUE
 import numpy as np
 import os
@@ -6,14 +7,13 @@ import itertools
 import pandas as pd
  
 from stable_baselines3 import SAC, DDPG, TD3
-from stable_baselines3.common.monitor import Monitor 
-from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from stable_baselines3.common.callbacks import CallbackList, EvalCallback,CheckpointCallback, StopTrainingOnNoModelImprovement
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise, NormalActionNoise, ActionNoise
 from stable_baselines3.common.evaluation import evaluate_policy 
  
 from mjrlenvs.scripts.pkgpaths import PkgPath  
 from mjrlenvs.scripts.callbacks import Time2EndCallback, SaveTrainingLogsCallback  
+from mjrlenvs.scripts.envutils import wrapenv
 
 
 class SaveTrainingConfigurations():
@@ -53,23 +53,7 @@ def run(args):
 
 
     ################################# ENVIRONMENT ########################################## 
-     
-    def wrapenv(env,args): 
-
-        env = Monitor(env)                      # A monitor wrapper for Gym environments, it is used to know the episode reward, length, time and other data
-        env = DummyVecEnv([lambda : env])       # Needed for all environments (e.g. used for mulit-processing)
-        
-        if args.NORMALIZE_ENV is not None:      # BUG we obtain different normalizations for env_expl and env_eval?!
-            env = VecNormalize(
-                env, 
-                norm_obs = args.NORMALIZE_ENV["norm_obs"], 
-                norm_reward = args.NORMALIZE_ENV["norm_reward"], 
-                clip_obs = args.NORMALIZE_ENV["clip_obs"], 
-                clip_reward = args.NORMALIZE_ENV["clip_reward"]
-            )               
-        return env
-
-
+      
     # EXPLORATION ENV  
 
     env_expl  = args.ENV_EXPL
@@ -82,11 +66,11 @@ def run(args):
 
     ############################### CONFIGURATIONS ######################################### 
     
-    if not os.path.exists(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/")):
-        os.makedirs(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/"))
+    if not os.path.exists(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/")):
+        os.makedirs(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/"))
 
     # output file with mean reward for each training
-    output_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/"+"results.csv")  
+    output_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/"+"run_results.csv")  
     save_training_data = SaveTrainingConfigurations(output_file_path, args)
  
     keys = args.AGENT_PARAMS.keys()
@@ -102,11 +86,11 @@ def run(args):
         for j in range(args.REPETE_TRAINING_TIMES):
 
             name = args.AGENT+f"_{i+1}_{j}"
-            tensorboard_logs_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/tensorboard/")
-            save_checkpoints_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/checkpoints/{name}/all_cps")
-            best_model_folder_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/checkpoints/{name}/best_model")
-            normalized_env_save_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/normenv/") 
-            save_training_logs_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/logs")
+            tensorboard_logs_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/tensorboard/")
+            save_checkpoints_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/checkpoints/{name}/all_cps")
+            best_model_folder_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/checkpoints/{name}/best_model")
+            normalized_env_save_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/normalized_env.pickle") 
+            save_training_logs_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/logs")
 
             ###################### AGENTS ######################## 
 
@@ -207,7 +191,8 @@ def run(args):
                 SaveTrainingLogsCallback(
                     folder_path = save_training_logs_file_path,
                     file_name = name,
-                    no_rollouts_episode = int(args.EXPL_EPISODE_HORIZON/config["train_freq"][0])
+                    no_rollouts_episode = int(args.EXPL_EPISODE_HORIZON/config["train_freq"][0]),
+                    save_all = args.SAVE_ALL_TRAINING_LOGS
                 )
             )
             
@@ -268,7 +253,9 @@ def run(args):
                 callback = callbacks
             )     
 
-            if args.NORMALIZE_ENV is not None:
+            if args.NORMALIZE_ENV is not None: 
+                if not normalized_env_save_path:
+                    os.makedirs(normalized_env_save_path)
                 env_eval.save(normalized_env_save_path)
  
 

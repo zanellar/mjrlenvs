@@ -51,3 +51,8 @@ python mjrlenvs/run/some_run.py
 This can be either a single training or multiple training with same parametrs or a grid search. Import 'run()' function from 'trainer.py' if you want to use the same envisornment for exploration and evaluation, or import 'run()' from 'trainer2.py' if you want to use 2 different evnironments.
 
 The best model, tensorboard output and a .txt file with parameters and mean reward can be found in 'mjrlenvs/data/testdata' 
+
+## Usage ##
+
+* fix trainer.py and runs with it
+* fix panda

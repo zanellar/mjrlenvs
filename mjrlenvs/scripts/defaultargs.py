@@ -6,7 +6,7 @@ class DefaultArgs():
 
     ############################## RUN #########################################################
 
-    TRAINING_ID = "default"   
+    RUN_ID = "default"   
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes
@@ -19,13 +19,14 @@ class DefaultArgs():
     EARLY_STOP = True
     EARLY_STOP_MAX_NO_IMPROVEMENTS = 3
     EARLY_STOP_MIN_EVALS = 5
+    SAVE_ALL_TRAINING_LOGS = False # creates a very huge file!!
  
     ########################## ENVIRONMENT ######################################################
 
     ENVIRONMENT = "base"  
     ENV_EXPL = EnvGymBase( )
     ENV_EVAL = EnvGymBase( )
-    NORMALIZE_ENV = None # or dict(norm_obs=True,norm_reward=True,clip_obs=1,clip_reward=1)
+    NORMALIZE_ENV = None # or dict(training=True, norm_obs=True, norm_reward=True, clip_obs=1, clip_reward=1) 
     ENV_EVAL_RENDERING = False
     
     ############################## AGENT #######################################################

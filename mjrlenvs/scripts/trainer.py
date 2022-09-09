@@ -30,10 +30,10 @@ def run(args):
     ################################### AGENT ##################################################
     ############################################################################################
     
-    if not os.path.exists(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/")):
-        os.makedirs(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/"))
+    if not os.path.exists(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/")):
+        os.makedirs(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/"))
 
-    output_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/"+"output.txt")
+    output_file_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/"+"output.txt")
 
     with open(output_file_path, 'w') as f: 
         line = "agent,"
@@ -87,7 +87,7 @@ def run(args):
                     action_noise = action_noise, 
                     policy_kwargs = config["policy_kwargs"],
                     verbose = 1, 
-                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/tensorboard/")
+                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/tensorboard/")
                 ) 
 
             if args.AGENT == "SAC":
@@ -114,7 +114,7 @@ def run(args):
                     policy_kwargs = config["policy_kwargs"],
                     #
                     verbose = 1, 
-                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/tensorboard/")
+                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/tensorboard/")
                 ) 
 
             if args.AGENT == "TD3": 
@@ -139,7 +139,7 @@ def run(args):
                     target_noise_clip =  config["target_noise_clip"],
                     #
                     verbose = 1, 
-                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/tensorboard/")
+                    tensorboard_log =  PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/tensorboard/")
                 ) 
         
             ######################################################################## 
@@ -150,8 +150,8 @@ def run(args):
                 callbackslist.append(
                     EvalCallback(
                         env, 
-                        best_model_save_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/best_model"),
-                        # log_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/eval_results"), 
+                        best_model_save_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/best_model"),
+                        # log_path = PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/eval_results"), 
                         eval_freq = args.EVAL_MODEL_FREQ,
                         n_eval_episodes = args.NUM_EVAL_EPISODES, 
                         deterministic = True, 
@@ -175,7 +175,7 @@ def run(args):
     
             ########################################################################  
 
-            best_model = agent_class.load(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.TRAINING_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/best_model/best_model.zip"))
+            best_model = agent_class.load(PkgPath.trainingdata(f"{args.ENVIRONMENT}/{args.RUN_ID}/checkpoints/"+args.AGENT+f"_{i+1}_{j}"+"/best_model/best_model.zip"))
             mean_reward, std_reward = evaluate_policy(
                                         best_model,  
                                         env, 

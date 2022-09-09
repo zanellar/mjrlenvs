@@ -15,7 +15,7 @@ class Args():
     NUM_EVAL_EPISODES_BEST_MODEL = 1
     REPETE_TRAINING_TIMES = 5 # times
     SAVE_EVAL_MODEL_WEIGHTS = True 
-    TRAINING_ID = "1"   
+    RUN_ID = "1"   
  
     ########################## ENVIRONMENT ######################################################
 

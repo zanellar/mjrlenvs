@@ -2,46 +2,67 @@
 import os 
 import time
 import pandas as pd
+import json
 from stable_baselines3.common.callbacks import BaseCallback
 
 ############################################################################################
 
 class SaveTrainingLogsCallback(BaseCallback):
-    def __init__(self, folder_path, file_name, no_rollouts_episode=1):
+    def __init__(self, folder_path, file_name, no_rollouts_episode=1, save_all=False):
         super().__init__() 
+        self.save_all = save_all
         self.folder_path = folder_path
         if not os.path.exists(self.folder_path):
             os.makedirs(self.folder_path)
-        self.file_path = os.path.join(self.folder_path,f"log_{file_name}.csv")
+        self.file_path = os.path.join(self.folder_path,f"log_{file_name}.json")
         self.no_rollouts_episode = no_rollouts_episode 
         self.episodes = 0
+        self.episodes_return = 0
+        self.rollouts_return = 0 
 
     def _on_training_start(self) -> None:
-        self.episode_data = dict(steps=[], obs=[], actions=[], rewards=[])
-        self.training_data = dict(episode_data=[])
-        self.rollouts = 0  
+        self.episodes_data = dict(steps=[], obs=[], actions=[], rewards=[])
+        self.training_data = dict(episodes_data=[], episodes_return=[], rollouts_return=[])
+        self.rollouts = 0   
+        return True
+
+    def _on_rollout_start(self) -> None:
+        self.rollouts_return = 0 
+        if self.rollouts % self.no_rollouts_episode == 0:
+            self.episodes_return = 0   
         return True
 
     def _on_step(self) -> bool:
         sample = self.training_env.env_method("get_sample") 
         obs, action, reward = sample[0]
-        self.episode_data["steps"].append(self.num_timesteps)
-        self.episode_data["obs"].append(obs.tolist())
-        self.episode_data["actions"].append(action.tolist())
-        self.episode_data["rewards"].append(reward)   
+        if self.save_all:
+            self.episodes_data["steps"].append(self.num_timesteps)
+            self.episodes_data["obs"].append(obs.tolist())
+            self.episodes_data["actions"].append(action.tolist())
+            self.episodes_data["rewards"].append(reward) 
+        self.rollouts_return += reward
         return True
     
     def _on_rollout_end(self) -> None: 
-        # df_ep = pd.DataFrame(self.episode_data)
+        # df_ep = pd.DataFrame(self.episodes_data)
         self.rollouts += 1
-        if self.rollouts == self.no_rollouts_episode:  
-            self.training_data["episode_data"].append(self.episode_data)   
+        self.episodes_return += self.rollouts_return
+        self.training_data["rollouts_return"].append(self.rollouts_return)  
+        if self.rollouts % self.no_rollouts_episode == 0:   
+            self.training_data["episodes_return"].append(self.episodes_return) 
+            if self.save_all:
+                self.training_data["episodes_data"].append(self.episodes_data)  
             self.episodes += 1 
         return True
 
     def _on_training_end(self) -> bool: 
-        df = pd.DataFrame(self.training_data, index = range(self.episodes))
-        df.to_csv(self.file_path,sep="\t")
+        print("@@@@@@@@@@@ TRAINING END @@@@@@@@@@@@@@") 
+        self.training_data["num_tot_steps"]= self.num_timesteps
+        with open(self.file_path, 'w') as f:
+            json.dump(self.training_data, f)
+
+        # df = pd.DataFrame(self.training_data)
+        # df.to_csv(self.file_path,sep="\t")
          
 ############################################################################################
 
