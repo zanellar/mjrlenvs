@@ -32,6 +32,8 @@ class Pendulum(EnvGymBase):
     self.action = np.zeros(self.sim.action_shape)
     self.obs = np.zeros(3)
     self.reward = None 
+    self.done = False
+    self.info = {}
  
     # Actions  
     self.action_space = spaces.Box(low=-1.0, high=1.0, shape=self.sim.action_shape, dtype=np.float32)   
@@ -62,9 +64,10 @@ class Pendulum(EnvGymBase):
     _, done = self.sim.execute(self.action) 
     self.reward = self.compute_reward( )  
     self.obs = self.get_obs()
-    info = {}
+    self.done = done
+    self.info = {}
  
-    return self.obs, self.reward, done, info
+    return self.obs, self.reward, self.done, self.info
 
   def get_obs(self): 
     qpos, qvel = self.sim.get_state()
@@ -79,4 +82,4 @@ class Pendulum(EnvGymBase):
     self.sim.render()
 
   def get_sample(self):
-    return self.obs, self.action, self.reward
+    return self.obs, self.action, self.reward, self.done, self.info

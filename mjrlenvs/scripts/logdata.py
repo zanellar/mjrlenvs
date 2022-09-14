@@ -1,28 +1,29 @@
 import numpy as np
 import pandas as pd 
 import json 
+import os
 from scipy.interpolate import interp1d, make_interp_spline, BSpline 
-
-
-from mjrlenvs.scripts.pkgpaths import PkgPath  
+ 
 
 class LogData():
-    def __init__(self, file_path) -> None:
-        with open(file_path, 'r') as f:
-            self.data = json.loads(f.read())   
-  
-    def get_data(self, episode):  
-        return self.data["episodes_data"][episode]  
-     
+    def __init__(self, file_path=None) -> None:
+        if file_path is not None:
+            with open(file_path, 'r') as f:
+                self.data = json.loads(f.read())   
+
+    def load(self, file_path): 
+        with open(file_path, 'r') as f: 
+            self.data = json.loads(f.read())  
+
     def num_episodes(self):  
         return len(self.data["episodes_return"])
 
     def num_steps(self):   
         return int(self.data["num_tot_steps"])
-        
-    def num_rollouts(self):  
-        return len(self.data["rollouts_return"])
-        
+         
+    def get_data(self, episode):  
+        return self.data["episodes_data"][episode]  
+     
     def get_obs(self, episode):
         episodes_data = self.get_data(episode) 
         obs = episodes_data["obs"]
@@ -45,14 +46,11 @@ class LogData():
 
     def get_episodes_return(self): 
         return self.data["episodes_return"] 
-
-    def get_rollouts_return(self): 
-        return self.data["rollouts_return"] 
-
+ 
     def df_steps_rewards(self,episode):
         return pd.DataFrame(dict(
-                    timeframe = self.get_steps(episode), 
-                    rewards = self.get_rewards(episode)
+                    Steps = self.get_steps(episode), 
+                    Rewards = self.get_rewards(episode)
                     )
                 )
 
@@ -63,19 +61,23 @@ class LogData():
         spl = make_interp_spline(timeframe, data, k=3)  # type: BSpline
         data = spl(newtimeframe)
         timeframe = newtimeframe
-        return timeframe, data
-                
-    def df_rollouts_return(self, smooth=False):
-        data = self.get_rollouts_return()
-        timeframe = np.arange(self.num_rollouts())
-        if smooth:
-            timeframe, data = self._smooth(timeframe,data)
-        return pd.DataFrame(dict(timeframe = timeframe, data = data))  
+        return timeframe, data 
  
-    def df_episode_return(self, smooth=False):
+    def df_episodes_returns(self, smooth=False):
         data = self.get_episodes_return()
         timeframe = np.arange(self.num_episodes())
         if smooth:
             timeframe, data = self._smooth(timeframe,data)
-        return pd.DataFrame(dict(timeframe = timeframe, data = data))  
+        return pd.DataFrame(dict(Episodes = timeframe, Returns = data))  
   
+    def df_runs_episodes_returns(self, folder_path, smooth=False): 
+        comb_df = pd.DataFrame()
+        for file_name in os.listdir(folder_path):
+            name = os.path.splitext(file_name)[0] 
+            file_path = os.path.join(folder_path,file_name)
+            self.load(file_path)
+            df = self.df_episode_return(smooth)
+            df["Runs"] = [name]*len(df["Episodes"])
+            comb_df = pd.concat([comb_df, df])
+        return comb_df
+

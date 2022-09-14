@@ -51,8 +51,9 @@ Thumbs.db
 # Python compiled bytecode
 *.pyc
 
-# training data 
+# data 
 data/train 
+data/test 
 
 # setup
 mjrlenvs.egg-info

@@ -75,7 +75,7 @@ class MjEnv(object):
  
         ##### SPECIFICATIONS ####
         
-        param_path = PkgPath.envdata(os.path.join(self.env_name, "specs.json"))  
+        param_path = os.path.join(PkgPath.ENV_DESC_FOLDER, self.env_name, "specs.json")  
   
         with open(param_path, 'r') as fi:
             param_spec = json.loads(fi.read()) 
@@ -94,7 +94,7 @@ class MjEnv(object):
 
         ##### MODEL #### 
 
-        xml_path = PkgPath.envdata(os.path.join(self.env_name, "arena.xml")) 
+        xml_path = os.path.join(PkgPath.ENV_DESC_FOLDER, self.env_name, "arena.xml") 
         self._mjmodel = mujoco_py.load_model_from_path(xml_path)
 
         ##### SIMULATOR ####

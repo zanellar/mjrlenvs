@@ -9,7 +9,7 @@ from mjrlenvs.scripts.pkgpaths import PkgPath
 Test of the environment using `mujoco-py`
 '''
  
-xml_path = PkgPath.envdata("pendulum/arena.xml") 
+xml_path = os.path.join(PkgPath.ENV_DESC_FOLDER,"pendulum/arena.xml") 
 
 # model
 model = mujoco_py.load_model_from_path(xml_path)

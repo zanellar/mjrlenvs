@@ -1,5 +1,5 @@
 
-from mjrlenvs.scripts.trainer2 import run 
+from mjrlenvs.scripts.trainer import run 
 from mjrlenvs.scripts.trainutils import linear_schedule 
 from mjrlenvs.scripts.defaultargs import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 

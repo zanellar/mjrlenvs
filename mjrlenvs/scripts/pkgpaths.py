@@ -3,16 +3,11 @@ import os
 import mjrlenvs
 
  
-class PkgPath(object):
+class PkgPath():
 
-    PACKAGE_PATH = mjrlenvs.__path__[0]  
+    _PACKAGE_PATH = mjrlenvs.__path__[0]  
 
-    def envdata(file=""):
-        return os.path.join(PkgPath.PACKAGE_PATH, os.pardir, "data/envdesc", file) 
-
-    def trainingdata(file=""):
-        return os.path.join(PkgPath.PACKAGE_PATH, os.pardir, "data/train", file) 
-
-    def testingdata(file=""):
-        return os.path.join(PkgPath.PACKAGE_PATH, os.pardir, "data/test", file) 
+    ENV_DESC_FOLDER = os.path.join(_PACKAGE_PATH, os.pardir, "data/envdesc")  
+    OUT_TRAIN_FOLDER = os.path.join(_PACKAGE_PATH, os.pardir, "data/train")  
+    OUT_TEST_FOLDER = os.path.join(_PACKAGE_PATH, os.pardir, "data/test")  
  

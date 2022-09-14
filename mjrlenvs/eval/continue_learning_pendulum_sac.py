@@ -8,11 +8,10 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from stable_baselines3.common.callbacks import EvalCallback
 from mjrlenvs.scripts.pkgpaths import PkgPath
-from mjrlenvs.envrl.pendulum_ebud import PendulumEBud
 from mjrlenvs.envrl.pendulum import Pendulum
 
 
-AGENT_WEIGHTS_PATH = PkgPath.testingdata("/home/riccardo/projects/mjrlenvs/data/train/pendulum/3/checkpoints/SAC_1_0/all_cps/rl_model_162500_steps.zip")
+AGENT_WEIGHTS_PATH = os.path.join(PkgPath.OUT_TEST_FOLDER,"/home/riccardo/projects/mjrlenvs/data/train/pendulum/3/checkpoints/SAC_1_0/all_cps/rl_model_162500_steps.zip")
 EPISODE_HORIZON = 500 # timesteps 
 RENDERING = True  
 NUM_EVAL_EPISODES = 1 
@@ -23,10 +22,10 @@ NUM_EVAL_EPISODES = 1
 
 ########################################################################
 
-if not os.path.exists(PkgPath.testingdata()):
-    os.makedirs(PkgPath.testingdata())
+if not os.path.exists(os.path.join(PkgPath.OUT_TEST_FOLDER,)):
+    os.makedirs(os.path.join(PkgPath.OUT_TEST_FOLDER,))
 
-with open(PkgPath.testingdata("output.txt"), 'w') as f: 
+with open(os.path.join(PkgPath.OUT_TEST_FOLDER,"output.txt"), 'w') as f: 
     line = "timestep,energy_tank,energy_exchanged" 
     f.write(line)
     f.close()
@@ -46,7 +45,7 @@ env = VecNormalize(env)               # Needed for improving training when using
 
 
 model = SAC.load(
-    path=PkgPath.trainingdata(AGENT_WEIGHTS_PATH), 
+    path=os.path.join(PkgPath.OUT_TRAIN_FOLDER,AGENT_WEIGHTS_PATH), 
     env=env
     )
 

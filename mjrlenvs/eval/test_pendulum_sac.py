@@ -1,20 +1,21 @@
-  
+import os
 import numpy as np  
 from mjrlenvs.scripts.tester import TestAgent
-
-from mjrlenvs.run.pendulum_sac2 import Args
+from mjrlenvs.scripts.pkgpaths import PkgPath
+from mjrlenvs.run.pendulum_sac import Args
 
 ########################################################################
 
 agent = "SAC_1_0"
 
 tester = TestAgent(Args)
-tester.loadmodel(agent)
-# tester.registercallback()
-# mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
-# print(mean, std)
-tester.plot(agent)
-# tester.infer()
+ 
+# tester.loadmodel(run_id)
+    # tester.registercallback()
+    # mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
+    # print(mean, std)
+tester.plot(show=False)
+    # tester.infer()
 
 ########################################################################
 ########################################################################
@@ -22,10 +23,10 @@ tester.plot(agent)
 
 ########################################################################
 
-# if not os.path.exists(PkgPath.testingdata()):
-#     os.makedirs(PkgPath.testingdata())
+# if not os.path.exists(os.path.join(PkgPath.OUT_TEST_FOLDER,)):
+#     os.makedirs(os.path.join(PkgPath.OUT_TEST_FOLDER,))
 
-# with open(PkgPath.testingdata("output.txt"), 'w') as f: 
+# with open(os.path.join(PkgPath.OUT_TEST_FOLDER,"output.txt"), 'w') as f: 
 #     line = "timestep,energy_tank,energy_exchanged" 
 #     f.write(line)
 #     f.close()
@@ -37,7 +38,7 @@ tester.plot(agent)
 #     print(energy_tank)
 #     energy_exchanged = locals_["info"]["energy_exchanged"]
 #     t = locals_["current_lengths"][0]
-#     with open(PkgPath.testingdata("output.txt"), 'a') as f: 
+#     with open(os.path.join(PkgPath.OUT_TEST_FOLDER,"output.txt"), 'a') as f: 
 #         line = f"\n{t},{energy_tank},{energy_exchanged}" 
 #         f.write(line)
 #         f.close()

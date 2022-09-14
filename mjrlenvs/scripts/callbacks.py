@@ -34,7 +34,7 @@ class SaveTrainingLogsCallback(BaseCallback):
 
     def _on_step(self) -> bool:
         sample = self.training_env.env_method("get_sample") 
-        obs, action, reward = sample[0]
+        obs, action, reward, _, _ = sample[0]
         if self.save_all:
             self.episodes_data["steps"].append(self.num_timesteps)
             self.episodes_data["obs"].append(obs.tolist())
@@ -43,11 +43,9 @@ class SaveTrainingLogsCallback(BaseCallback):
         self.rollouts_return += reward
         return True
     
-    def _on_rollout_end(self) -> None: 
-        # df_ep = pd.DataFrame(self.episodes_data)
+    def _on_rollout_end(self) -> None:  
         self.rollouts += 1
-        self.episodes_return += self.rollouts_return
-        self.training_data["rollouts_return"].append(self.rollouts_return)  
+        self.episodes_return += self.rollouts_return 
         if self.rollouts % self.no_rollouts_episode == 0:   
             self.training_data["episodes_return"].append(self.episodes_return) 
             if self.save_all:
@@ -60,9 +58,7 @@ class SaveTrainingLogsCallback(BaseCallback):
         self.training_data["num_tot_steps"]= self.num_timesteps
         with open(self.file_path, 'w') as f:
             json.dump(self.training_data, f)
-
-        # df = pd.DataFrame(self.training_data)
-        # df.to_csv(self.file_path,sep="\t")
+ 
          
 ############################################################################################
 

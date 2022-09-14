@@ -7,6 +7,7 @@ class DefaultArgs():
     ############################## RUN #########################################################
 
     RUN_ID = "default"   
+    RUN_OUT_FOLDER_PATH = None
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes

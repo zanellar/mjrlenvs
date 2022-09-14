@@ -1,4 +1,4 @@
- 
+import os 
 from ast import Try
 from pickle import FALSE
 import numpy as np 
@@ -23,8 +23,28 @@ class TestAgent():
         self.callback_list = CallbackList([])
         self.cb = None
 
-    def loadmodel(self, name=None): 
-        saved_model_path = PkgPath.trainingdata(f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}/checkpoints/{name}/best_model/best_model.zip")
+        ###### INPUT FOLDERS PATH
+        if self.args.RUN_OUT_FOLDER_PATH is not None:
+            self.training_output_folder_path = self.args.RUN_OUT_FOLDER_PATH
+        else:
+            self.training_output_folder_path = os.path.join(PkgPath.OUT_TRAIN_FOLDER,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}")
+
+        print(f"Loading logs from: {self.training_output_folder_path}")
+        self.saved_training_logs_path = os.path.join(self.training_output_folder_path,"logs") 
+
+        ###### OUTPUT FOLDERS PATH
+        self.testing_output_folder_path = os.path.join(PkgPath.OUT_TEST_FOLDER,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}") 
+
+        self.save_testing_evals_path = os.path.join(self.testing_output_folder_path,"evals")
+        if not os.path.exists(self.save_testing_evals_path):
+            os.makedirs(self.save_testing_evals_path)
+
+        self.save_testing_plots_path = os.path.join(self.testing_output_folder_path,"plots")
+        if not os.path.exists(self.save_testing_plots_path):
+            os.makedirs(self.save_testing_plots_path)
+
+    def loadmodel(self, name): 
+        saved_model_path = os.path.join(self.training_output_folder_path,f"/checkpoints/{name}/best_model/best_model.zip")
 
         if self.args.AGENT == "SAC": 
             self.model = SAC.load(saved_model_path)
@@ -60,15 +80,19 @@ class TestAgent():
             if done:
                 obs = self.env.reset()
     
-    def plot(self, name=None, y="returns"): 
-        save_training_logs_file_path = PkgPath.trainingdata(f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}/logs")
-        file_name = f"log_{name}.json"
-        plotter = PlotLogData(save_training_logs_file_path, file_name=file_name)
+    def plot(self, model_id=None, y="returns",save=True, show=True, save_name=None): 
+        if model_id is not None:
+            file_name = f"log_{model_id}.json"
+        else:
+            file_name = None    
+        plotter = PlotLogData(self.saved_training_logs_path, file_name=file_name)   
         if y == "returns":
-            plotter.plt_returns()
+            if save_name is None:
+                save_name = os.path.join(self.save_testing_plots_path,f"{self.args.RUN_ID}.pdf")
+            plotter.plt_returns(save=save, show=show, save_name=save_name)
         else:
             plotter.plt_rewards(episode=y) 
-
+ 
 
 
 
