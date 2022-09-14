@@ -207,7 +207,7 @@ class MjEnv(object):
         for i, name in enumerate(joint_names):   
             joint_index = self._sim.model.get_joint_qpos_addr(name)
             r = joint_ranges[joint_names.index(name)]
-            if joints == 'random': 
+            if joints == 'random':  
                 jval = random.uniform(r[0], r[1])
             else:
                 jval = joints[i]

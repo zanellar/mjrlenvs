@@ -11,10 +11,10 @@ agent = "SAC_1_0"
 tester = TestAgent(Args)
 tester.loadmodel(agent)
 # tester.registercallback()
-mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
-print(mean, std)
+# mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
+# print(mean, std)
 tester.plot(agent)
-tester.infer()
+# tester.infer()
 
 ########################################################################
 ########################################################################

@@ -23,7 +23,7 @@ class Pendulum(EnvGymBase):
     
     # Env params
     self.sim = MjEnv( 
-      env_name="pendulum",   
+      env_name="pendulum_limit",   
       max_episode_length=max_episode_length,
       init_joint_config=init_joint_config 
       )

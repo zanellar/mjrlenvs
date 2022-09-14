@@ -1,7 +1,5 @@
 from traceback import print_tb
 
-import sys
-sys.path.append('/home/kvn/Super Duper Code/panda_mujoco/')
 from mjrlenvs.scripts.mjenv import MjEnv
 import numpy as np
 
@@ -17,7 +15,7 @@ init_joint_config = [0]
 
 env = MjEnv(
     env_name="pendulum",   
-    max_episode_length=1000,
+    max_episode_length=100,
     # init_joint_config= 'random'
     init_joint_config=init_joint_config 
     ) 
@@ -26,7 +24,7 @@ test_action = [2.0]
 
 while True:
     env.render()
-    state, done = env.execute(test_action)  
+    state, done = env.execute(test_action)    
     print(f"\n@@@ state={state} " )  
 
  

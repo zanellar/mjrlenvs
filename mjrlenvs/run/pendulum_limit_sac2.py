@@ -1,24 +1,24 @@
 
 from mjrlenvs.scripts.trainer2 import run 
 from mjrlenvs.scripts.trainutils import linear_schedule 
-from mjrlenvs.scripts.defaultargs import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 
+from mjrlenvs.scripts.defaultargs import DefaultArgs
 
 class Args(DefaultArgs): 
 
     ############################## RUN #########################################################
 
-    RUN_ID = "prova3"    
+    RUN_ID = "prova2"   
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes
     EVAL_MODEL_FREQ = 10*EXPL_EPISODE_HORIZON 
-    NUM_EVAL_EPISODES = 5
+    NUM_EVAL_EPISODES = 1
     NUM_EVAL_EPISODES_BEST_MODEL = 1
-    REPETE_TRAINING_TIMES = 20 # times
+    REPETE_TRAINING_TIMES = 1 # times
     SAVE_EVAL_MODEL_WEIGHTS = True 
     SAVE_CHECKPOINTS = True
-    EARLY_STOP = False
+    EARLY_STOP = True
     EARLY_STOP_MAX_NO_IMPROVEMENTS = 3
     EARLY_STOP_MIN_EVALS = 5
     SAVE_ALL_TRAINING_LOGS = False
@@ -29,12 +29,12 @@ class Args(DefaultArgs):
 
     ENV_EXPL = Pendulum(
               max_episode_length=EXPL_EPISODE_HORIZON, 
-              init_joint_config = "random"
+              init_joint_config = [0]
             )
 
     ENV_EVAL = Pendulum(
               max_episode_length=EVAL_EPISODE_HORIZON, 
-              init_joint_config = "random"
+              init_joint_config = [0]
             )
 
     NORMALIZE_ENV = dict(training=True, norm_obs=True, norm_reward=True, clip_obs=10, clip_reward=10) 
