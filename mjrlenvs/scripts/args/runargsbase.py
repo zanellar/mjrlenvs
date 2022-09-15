@@ -1,13 +1,14 @@
 
-from mjrlenvs.scripts.trainutils import linear_schedule 
-from mjrlenvs.envrl.base import EnvGymBase  
+from mjrlenvs.scripts.train.trainutils import linear_schedule 
+from mjrlenvs.scripts.env.envgymbase import EnvGymBase  
 
 class DefaultArgs(): 
 
     ############################## RUN #########################################################
 
     RUN_ID = "default"   
-    RUN_OUT_FOLDER_PATH = None
+    OUT_TRAIN_FOLDER = None
+    OUT_TEST_FOLDER = None
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes
@@ -21,6 +22,8 @@ class DefaultArgs():
     EARLY_STOP_MAX_NO_IMPROVEMENTS = 3
     EARLY_STOP_MIN_EVALS = 5
     SAVE_ALL_TRAINING_LOGS = False # creates a very huge file!!
+
+    CALLBACKS = []
  
     ########################## ENVIRONMENT ######################################################
 

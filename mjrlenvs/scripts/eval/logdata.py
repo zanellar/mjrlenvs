@@ -73,11 +73,12 @@ class LogData():
     def df_runs_episodes_returns(self, folder_path, smooth=False): 
         comb_df = pd.DataFrame()
         for file_name in os.listdir(folder_path):
-            name = os.path.splitext(file_name)[0] 
-            file_path = os.path.join(folder_path,file_name)
-            self.load(file_path)
-            df = self.df_episode_return(smooth)
-            df["Runs"] = [name]*len(df["Episodes"])
-            comb_df = pd.concat([comb_df, df])
+            name,ext = os.path.splitext(file_name)
+            if name.startswith("log_") and ext==".json": 
+                file_path = os.path.join(folder_path,file_name)
+                self.load(file_path)
+                df = self.df_episodes_returns(smooth)
+                df["Runs"] = [name]*len(df["Episodes"])
+                comb_df = pd.concat([comb_df, df])
         return comb_df
 

@@ -5,7 +5,7 @@ import json
 import os 
 import glfw
 
-from mjrlenvs.scripts.pkgpaths import PkgPath
+from mjrlenvs.scripts.args.pkgpaths import PkgPath
 
 ''' 
 DOCUMENTATION: 
@@ -72,10 +72,11 @@ class MjEnv(object):
         self.env_name = env_name
         self.controller = controller
         self.specs = specs
- 
-        ##### SPECIFICATIONS ####
         
-        param_path = os.path.join(PkgPath.ENV_DESC_FOLDER, self.env_name, "specs.json")  
+        env_data_folder = PkgPath.ENV_DESC_FOLDER if folder_path is None else folder_path
+ 
+        ##### SPECIFICATIONS #### 
+        param_path = os.path.join(env_data_folder, self.env_name, "specs.json")  
   
         with open(param_path, 'r') as fi:
             param_spec = json.loads(fi.read()) 
@@ -93,8 +94,7 @@ class MjEnv(object):
  
 
         ##### MODEL #### 
-
-        xml_path = os.path.join(PkgPath.ENV_DESC_FOLDER, self.env_name, "arena.xml") 
+        xml_path = os.path.join(env_data_folder, self.env_name, "arena.xml") 
         self._mjmodel = mujoco_py.load_model_from_path(xml_path)
 
         ##### SIMULATOR ####

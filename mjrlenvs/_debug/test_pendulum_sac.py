@@ -1,7 +1,7 @@
 import os
 import numpy as np  
-from mjrlenvs.scripts.tester import TestAgent
-from mjrlenvs.scripts.pkgpaths import PkgPath
+from mjrlenvs.scripts.eval.tester import TestAgent
+from mjrlenvs.scripts.args.pkgpaths import PkgPath
 from mjrlenvs.run.pendulum_sac import Args
 
 ########################################################################
@@ -12,8 +12,8 @@ tester = TestAgent(Args)
  
 # tester.loadmodel(run_id)
     # tester.registercallback()
-    # mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
-    # print(mean, std)
+    mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
+    print(mean, std)
 tester.plot(show=False)
     # tester.infer()
 

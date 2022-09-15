@@ -2,7 +2,7 @@ from traceback import print_tb
 
 import sys
 sys.path.append('/home/kvn/Super Duper Code/panda_mujoco/')
-from mjrlenvs.scripts.mjenv import MjEnv
+from mjrlenvs.scripts.env.mjenv import MjEnv
 import numpy as np
 
 

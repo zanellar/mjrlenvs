@@ -2,8 +2,8 @@ import numpy as np
 import gym
 from gym import spaces 
 
-from mjrlenvs.scripts.mjenv import MjEnv
-from mjrlenvs.envrl.base import EnvGymGoalBase
+from mjrlenvs.scripts.env.mjenv import MjEnv
+from mjrlenvs.scripts.env.envgymbase import EnvGymGoalBase
  
 class PandaTorquesGoalReach(EnvGymGoalBase): 
   

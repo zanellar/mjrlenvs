@@ -1,7 +1,8 @@
 
-from mjrlenvs.scripts.trainer import run 
-from mjrlenvs.scripts.trainutils import linear_schedule 
-from mjrlenvs.scripts.defaultargs import DefaultArgs
+from mjrlenvs.scripts.train.trainer import run 
+from mjrlenvs.scripts.eval.tester import TestAgent
+from mjrlenvs.scripts.train.trainutils import linear_schedule 
+from mjrlenvs.scripts.args.runargsbase import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 
 
 class Args(DefaultArgs): 
@@ -29,12 +30,12 @@ class Args(DefaultArgs):
 
     ENV_EXPL = Pendulum(
               max_episode_length=EXPL_EPISODE_HORIZON, 
-              init_joint_config = "random"
+              init_joint_config = "random" 
             )
 
     ENV_EVAL = Pendulum(
               max_episode_length=EVAL_EPISODE_HORIZON, 
-              init_joint_config = "random"
+              init_joint_config = "random" 
             )
 
     NORMALIZE_ENV = dict(training=True, norm_obs=True, norm_reward=True, clip_obs=10, clip_reward=10) 
@@ -74,4 +75,14 @@ class Args(DefaultArgs):
 ############################################################################################
 
 if __name__ == "__main__":
-    run(Args())
+    x = input("Train[t] or Eval[e]? ")
+    if x == "t":
+        run(Args())
+    elif x == "e":
+        tester = TestAgent(Args)
+        # for name in 
+            # tester.loadmodel(name)
+            # mean, std = tester.evalpolicy(n_eval_episodes=5, render=False, save=True)
+        tester.plot(show=False)
+    else:
+        exit(f"Wrong Selection: {x}")

@@ -3,7 +3,7 @@ from traceback import print_tb
 import mujoco_py
 import os
 import math
-from mjrlenvs.scripts.pkgpaths import PkgPath
+from mjrlenvs.scripts.args.pkgpaths import PkgPath
 
 '''
 Test of the environment using `mujoco-py`

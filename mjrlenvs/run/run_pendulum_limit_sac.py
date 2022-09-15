@@ -1,8 +1,8 @@
 
-from mjrlenvs.scripts.trainer import run 
-from mjrlenvs.scripts.trainutils import linear_schedule 
+from mjrlenvs.scripts.train.trainer import run 
+from mjrlenvs.scripts.train.trainutils import linear_schedule 
+from mjrlenvs.scripts.args.runargsbase import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 
-from mjrlenvs.scripts.defaultargs import DefaultArgs
 
 class Args(DefaultArgs): 
 
@@ -25,16 +25,18 @@ class Args(DefaultArgs):
  
     ########################## ENVIRONMENT ######################################################
 
-    ENVIRONMENT = "pendulum" 
+    ENVIRONMENT = "pendulum_limit" 
 
     ENV_EXPL = Pendulum(
               max_episode_length=EXPL_EPISODE_HORIZON, 
-              init_joint_config = [0]
+              init_joint_config = [0],
+              env_name=ENVIRONMENT
             )
 
     ENV_EVAL = Pendulum(
               max_episode_length=EVAL_EPISODE_HORIZON, 
-              init_joint_config = [0]
+              init_joint_config = [0],
+              env_name=ENVIRONMENT
             )
 
     NORMALIZE_ENV = dict(training=True, norm_obs=True, norm_reward=True, clip_obs=10, clip_reward=10) 

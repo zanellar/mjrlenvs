@@ -1,20 +1,19 @@
-from os import PRIO_PGRP
-from traceback import print_tb
+
 import numpy as np
 import math
 from gym import spaces
-import matplotlib.pyplot as plt
 
-from mjrlenvs.scripts.pkgpaths import PkgPath
-from mjrlenvs.scripts.mjenv import MjEnv 
-from mjrlenvs.envrl.base import EnvGymBase
+from mjrlenvs.scripts.env.mjenv import MjEnv 
+from mjrlenvs.scripts.env.envgymbase import EnvGymBase
  
 class Pendulum(EnvGymBase): 
 
   def __init__(self, 
               max_episode_length=5000, 
               init_joint_config = [0],
-              debug = False
+              debug = False,
+              folder_path = None,
+              env_name="pendulum"
               ):
     super(Pendulum, self).__init__()
 
@@ -23,7 +22,8 @@ class Pendulum(EnvGymBase):
     
     # Env params
     self.sim = MjEnv( 
-      env_name="pendulum",   
+      env_name=env_name, 
+      folder_path=folder_path,
       max_episode_length=max_episode_length,
       init_joint_config=init_joint_config 
       )

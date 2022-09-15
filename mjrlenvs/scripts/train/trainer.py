@@ -11,9 +11,10 @@ from stable_baselines3.common.callbacks import CallbackList, EvalCallback,Checkp
 from stable_baselines3.common.noise import OrnsteinUhlenbeckActionNoise, NormalActionNoise, ActionNoise
 from stable_baselines3.common.evaluation import evaluate_policy 
  
-from mjrlenvs.scripts.pkgpaths import PkgPath  
-from mjrlenvs.scripts.callbacks import Time2EndCallback, SaveTrainingLogsCallback  
-from mjrlenvs.scripts.envutils import wrapenv
+from mjrlenvs.scripts.args.pkgpaths import PkgPath  
+from mjrlenvs.scripts.cbs.logcbs import SaveTrainingLogsCallback  
+from mjrlenvs.scripts.cbs.tbcbs import Time2EndCallback 
+from mjrlenvs.scripts.env.envutils import wrapenv
 
 
 class SaveTrainingConfigurations():
@@ -65,8 +66,8 @@ def run(args):
 
     ################ OUTPUT FOLDERS    
     
-    if args.RUN_OUT_FOLDER_PATH is not None: 
-        run_output_folder_path = args.RUN_OUT_FOLDER_PATH
+    if args.OUT_TRAIN_FOLDER is not None: 
+        run_output_folder_path = os.path.join(args.OUT_TRAIN_FOLDER,f"{args.ENVIRONMENT}/{args.RUN_ID}/") 
     else:
         run_output_folder_path = os.path.join(PkgPath.OUT_TRAIN_FOLDER,f"{args.ENVIRONMENT}/{args.RUN_ID}/")
     
@@ -191,15 +192,15 @@ def run(args):
 
             callbackslist = [] 
 
-            ###### SAVE TRAINING LOGS  
-            callbackslist.append(
-                SaveTrainingLogsCallback(
-                    folder_path = save_training_logs_file_path,
-                    file_name = name,
-                    no_rollouts_episode = int(args.EXPL_EPISODE_HORIZON/config["train_freq"][0]),
-                    save_all = args.SAVE_ALL_TRAINING_LOGS
-                )
-            )
+            ###### SAVE TRAINING LOGS
+            save_training_logs_cb = SaveTrainingLogsCallback(save_all = args.SAVE_ALL_TRAINING_LOGS)  
+            save_training_logs_cb.set(
+                folder_path = save_training_logs_file_path,
+                file_name = name,
+                num_rollouts_episode = int(args.EXPL_EPISODE_HORIZON/config["train_freq"][0])
+            ) 
+
+            callbackslist.append(save_training_logs_cb)
  
             ###### PREDICT ENDING TIME   
             callbackslist.append(
@@ -243,6 +244,15 @@ def run(args):
                     callback_after_eval = early_stop_callback 
                 ) 
             )  # BUG: need to comment "sync_envs_normalization" function in EvalCallback._on_step() method 
+
+            if len(args.CALLBACKS)>0:
+                for external_callback in args.CALLBACKS:
+                    external_callback.set(
+                        folder_path = save_training_logs_file_path,
+                        file_name = name,
+                        num_rollouts_episode = int(args.EXPL_EPISODE_HORIZON/config["train_freq"][0])
+                    ) 
+                    callbackslist.append(external_callback)
  
             callbacks = CallbackList(callbackslist)
         

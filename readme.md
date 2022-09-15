@@ -37,7 +37,7 @@ https://github.com/openai/mujoco-py/pull/487/commits/ab026c1ff8df54841a549cfd393
 ### Create an environment
 
 - create a folder in 'data/envdesc' with the files 'arena.xml'(simulation model description) and a 'specs.json'(state and action specifics)
-- create a class in 'mjrlenvs/envrl/' that extends 'EnvGymBase' or 'EnvGymGoalBase' ('from mjrlenvs.envrl.base import *' ) and implement here the observation and the reward computation 
+- create a class in 'mjrlenvs/envrl/' that extends 'EnvGymBase' or 'EnvGymGoalBase' ('from mjrlenvs.scripts.env.envgymbase import *' ) and implement here the observation and the reward computation 
 
 
 ### Run training

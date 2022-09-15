@@ -1,8 +1,8 @@
 import math
 import numpy as np
 from gym import spaces
-from mjrlenvs.scripts.mjenv import MjEnv 
-from mjrlenvs.envrl.base import EnvGymBase
+from mjrlenvs.scripts.env.mjenv import MjEnv 
+from mjrlenvs.scripts.env.envgymbase import EnvGymBase
 
 class PandaPositionReach(EnvGymBase): 
   

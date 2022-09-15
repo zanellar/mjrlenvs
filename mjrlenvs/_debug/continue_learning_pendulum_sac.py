@@ -7,7 +7,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor 
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from stable_baselines3.common.callbacks import EvalCallback
-from mjrlenvs.scripts.pkgpaths import PkgPath
+from mjrlenvs.scripts.args.pkgpaths import PkgPath
 from mjrlenvs.envrl.pendulum import Pendulum
 
 

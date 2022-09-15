@@ -1,4 +1,4 @@
-from mjrlenvs.scripts.logdata import LogData
+from mjrlenvs.scripts.eval.logdata import LogData
 
 
 logger = LogData()   

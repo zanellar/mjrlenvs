@@ -5,9 +5,9 @@ import numpy as np
 from stable_baselines3 import HER, SAC, TD3, DDPG 
 from stable_baselines3.common.evaluation import evaluate_policy   
 from stable_baselines3.common.callbacks import CallbackList, BaseCallback 
-from mjrlenvs.scripts.pkgpaths import PkgPath
-from mjrlenvs.scripts.envutils import wrapenv 
-from mjrlenvs.scripts.plotdata import PlotLogData  
+from mjrlenvs.scripts.args.pkgpaths import PkgPath
+from mjrlenvs.scripts.env.envutils import wrapenv 
+from mjrlenvs.scripts.eval.plotdata import PlotLogData  
  
  
 
@@ -22,18 +22,17 @@ class TestAgent():
 
         self.callback_list = CallbackList([])
         self.cb = None
-
+ 
         ###### INPUT FOLDERS PATH
-        if self.args.RUN_OUT_FOLDER_PATH is not None:
-            self.training_output_folder_path = self.args.RUN_OUT_FOLDER_PATH
-        else:
-            self.training_output_folder_path = os.path.join(PkgPath.OUT_TRAIN_FOLDER,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}")
+        out_train_folder = PkgPath.OUT_TRAIN_FOLDER if self.args.OUT_TRAIN_FOLDER is None else self.args.OUT_TRAIN_FOLDER 
+        self.training_output_folder_path = os.path.join(out_train_folder,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}")
 
         print(f"Loading logs from: {self.training_output_folder_path}")
         self.saved_training_logs_path = os.path.join(self.training_output_folder_path,"logs") 
 
         ###### OUTPUT FOLDERS PATH
-        self.testing_output_folder_path = os.path.join(PkgPath.OUT_TEST_FOLDER,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}") 
+        out_test_folder = PkgPath.OUT_TEST_FOLDER if self.args.OUT_TEST_FOLDER is None else self.args.OUT_TEST_FOLDER
+        self.testing_output_folder_path = os.path.join(out_test_folder,f"{self.args.ENVIRONMENT}/{self.args.RUN_ID}") 
 
         self.save_testing_evals_path = os.path.join(self.testing_output_folder_path,"evals")
         if not os.path.exists(self.save_testing_evals_path):
@@ -43,7 +42,7 @@ class TestAgent():
         if not os.path.exists(self.save_testing_plots_path):
             os.makedirs(self.save_testing_plots_path)
 
-    def loadmodel(self, name): 
+    def loadmodel(self, name):  
         saved_model_path = os.path.join(self.training_output_folder_path,f"/checkpoints/{name}/best_model/best_model.zip")
 
         if self.args.AGENT == "SAC": 
@@ -57,7 +56,7 @@ class TestAgent():
         # self.callback_list.callbacks.append(cb)
         self.cb = cb
 
-    def evalpolicy(self, n_eval_episodes=30, render=False): 
+    def evalpolicy(self, n_eval_episodes=30, render=False, save=False): 
         mean_reward, std_reward = evaluate_policy(
                                     self.model,
                                     self.env, 
@@ -67,7 +66,7 @@ class TestAgent():
                                     callback = self.cb
                                     )
  
-        # print(mean_reward, std_reward)
+        print(f"mean_reward={mean_reward}, std_reward={std_reward}")
         return mean_reward, std_reward
 
     def infer(self, rendering = True, cam = "frontview"):
@@ -79,6 +78,20 @@ class TestAgent():
                 self.env.render(cam)
             if done:
                 obs = self.env.reset()
+
+    def evalrun(self, n_eval_episodes=30, render=False, save=False, plot=False):  
+        lmean = []
+        lstd = []
+        for file_name in os.listdir(self.saved_training_logs_path):  
+            name = os.path.splitext(file_name)[0]
+            prefix, model_name = name.split("_") 
+            if prefix == "log":  
+                self.loadmodel(model_name)
+                mean_train_return, std_train_return = self.evalpolicy(n_eval_episodes, render, save)
+                lmean.append(mean_train_return)
+                lstd.append(std_train_return) 
+        return lmean, lstd
+ 
     
     def plot(self, model_id=None, y="returns",save=True, show=True, save_name=None): 
         if model_id is not None:

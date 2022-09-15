@@ -1,6 +1,6 @@
 from traceback import print_tb
 
-from mjrlenvs.scripts.mjenv import MjEnv
+from mjrlenvs.scripts.env.mjenv import MjEnv
 import numpy as np
 
 
