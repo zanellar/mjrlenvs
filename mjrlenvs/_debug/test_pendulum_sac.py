@@ -1,6 +1,6 @@
 import os
 import numpy as np  
-from mjrlenvs.scripts.eval.tester import TestAgent
+from mjrlenvs.scripts.eval.tester import TestRun
 from mjrlenvs.scripts.args.pkgpaths import PkgPath
 from mjrlenvs.run.pendulum_sac import Args
 
@@ -8,7 +8,7 @@ from mjrlenvs.run.pendulum_sac import Args
 
 agent = "SAC_1_0"
 
-tester = TestAgent(Args)
+tester = TestRun(Args)
  
 # tester.loadmodel(run_id)
     # tester.registercallback()

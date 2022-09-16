@@ -67,14 +67,14 @@ def run(args):
     ################ OUTPUT FOLDERS    
     
     if args.OUT_TRAIN_FOLDER is not None: 
-        run_output_folder_path = os.path.join(args.OUT_TRAIN_FOLDER,f"{args.ENVIRONMENT}/{args.RUN_ID}/") 
+        run_output_folder_path = os.path.join(args.OUT_TRAIN_FOLDER, args.ENVIRONMENT, args.RUN_ID) 
     else:
-        run_output_folder_path = os.path.join(PkgPath.OUT_TRAIN_FOLDER,f"{args.ENVIRONMENT}/{args.RUN_ID}/")
+        run_output_folder_path = os.path.join(PkgPath.OUT_TRAIN_FOLDER, args.ENVIRONMENT, args.RUN_ID)
     
     if not os.path.exists(run_output_folder_path):
         os.makedirs(run_output_folder_path)
 
-    tensorboard_logs_path = os.path.join(run_output_folder_path, "tensorboard/")
+    tensorboard_logs_path = os.path.join(run_output_folder_path, "tensorboard")
     normalized_env_save_path = os.path.join(run_output_folder_path, "normalized_env.pickle") 
     save_training_logs_file_path = os.path.join(run_output_folder_path, "logs")
   
@@ -95,8 +95,8 @@ def run(args):
         for j in range(args.REPETE_TRAINING_TIMES):
 
             name = args.AGENT + f"_{i+1}_{j}"
-            save_checkpoints_path = os.path.join(run_output_folder_path, f"checkpoints/{name}/all_cps")
-            best_model_folder_path = os.path.join(run_output_folder_path, f"checkpoints/{name}/best_model")
+            save_checkpoints_path = os.path.join(run_output_folder_path, "checkpoints", name, "all_cps")
+            best_model_folder_path = os.path.join(run_output_folder_path, "checkpoints", name, "best_model")
 
             ###################### AGENTS ######################## 
 

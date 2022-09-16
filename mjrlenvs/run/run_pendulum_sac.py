@@ -1,6 +1,6 @@
 
 from mjrlenvs.scripts.train.trainer import run 
-from mjrlenvs.scripts.eval.tester import TestAgent
+from mjrlenvs.scripts.eval.tester import TestRun
 from mjrlenvs.scripts.train.trainutils import linear_schedule 
 from mjrlenvs.scripts.args.runargsbase import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     if x == "t":
         run(Args())
     elif x == "e":
-        tester = TestAgent(Args)
+        tester = TestRun(Args)
         # for name in 
             # tester.loadmodel(name)
             # mean, std = tester.evalpolicy(n_eval_episodes=5, render=False, save=True)

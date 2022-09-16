@@ -40,7 +40,7 @@ https://github.com/openai/mujoco-py/pull/487/commits/ab026c1ff8df54841a549cfd393
 - create a class in 'mjrlenvs/envrl/' that extends 'EnvGymBase' or 'EnvGymGoalBase' ('from mjrlenvs.scripts.env.envgymbase import *' ) and implement here the observation and the reward computation 
 
 
-### Run training
+### Run 
 
 create a configuration file like 'some_run.py' in 'mjrlenvs/train/run' then 
 
@@ -48,9 +48,9 @@ create a configuration file like 'some_run.py' in 'mjrlenvs/train/run' then
 python mjrlenvs/run/some_run.py
 '''
 
-This can be either a single training or multiple training with same parametrs or a grid search. Import 'run()' function from 'trainer.py' if you want to use the same envisornment for exploration and evaluation, or import 'run()' from 'trainer2.py' if you want to use 2 different evnironments.
+This can be either a single training or multiple trainings with same parametrs or a grid search. 
 
-The best model, tensorboard output and a .txt file with parameters and mean reward can be found in 'mjrlenvs/data/testdata' 
+The best model, tensorboard output and a .txt file with parameters and mean reward can be found in 'mjrlenvs/data/test' 
 
 ## Usage ##
 

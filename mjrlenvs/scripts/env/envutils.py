@@ -13,7 +13,7 @@ def wrapenv(env,args,load_norm_env=False):
         out_train_folder = PkgPath.OUT_TRAIN_FOLDER if args.OUT_TRAIN_FOLDER is None else args.OUT_TRAIN_FOLDER
 
         if load_norm_env:
-            normalized_env_path = os.path.join(out_train_folder,f"{args.ENVIRONMENT}/{args.RUN_ID}/normalized_env.pickle") 
+            normalized_env_path = os.path.join(out_train_folder, args.ENVIRONMENT, args.RUN_ID, "normalized_env.pickle") 
             env = VecNormalize.load(normalized_env_path, env)
         else:
             env = VecNormalize(
