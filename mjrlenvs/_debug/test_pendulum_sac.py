@@ -12,7 +12,7 @@ tester = TestRun(Args)
  
 # tester.loadmodel(run_id)
     # tester.registercallback()
-    mean, std = tester.evalpolicy(n_eval_episodes=5, render=False)
+    mean, std = tester.eval_returns_model(n_eval_episodes=5, render=False)
     print(mean, std)
 tester.plot(show=False)
     # tester.infer()

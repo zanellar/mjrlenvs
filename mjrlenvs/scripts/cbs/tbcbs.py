@@ -6,15 +6,18 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 class Time2EndCallback(BaseCallback):
     def __init__(self, repete_times, number_configs,number_episodes,episode_horizon,config_index,training_index ):
-        super().__init__( )
-        self.t0 = time.time() 
-        self.t1 = self.t0  
+        super().__init__( ) 
         self.repete_times = repete_times
         self.number_configs = number_configs
         self.number_episodes = number_episodes,
         self.episode_horizon = episode_horizon,
         self.config_index = config_index,
         self.training_index = training_index
+
+    def _on_training_start(self) -> None:
+        self.t0 = time.time() 
+        self.t1 = self.t0  
+        return True
 
     def _on_step(self) -> bool:
         self.t2 = time.time()  

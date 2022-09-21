@@ -65,12 +65,14 @@ def df_episodes_returns(data, smooth=False):
         timeframe, returns = _smooth(timeframe,returns,num_steps(data))
     return pd.DataFrame(dict(Episodes = timeframe, Returns = returns))  
 
-def df_run_episodes_returns(folder_path, smooth=False): 
-    comb_df = pd.DataFrame()
-    for file_name in os.listdir(folder_path):
+def df_run_episodes_returns(run_folder_path, smooth=False): 
+    comb_df = pd.DataFrame() 
+    print(f"Loading logs from: {run_folder_path}")
+    saved_logs_path = os.path.join(run_folder_path, "logs") 
+    for file_name in os.listdir(saved_logs_path):
         name,ext = os.path.splitext(file_name)
         if name.startswith("log_") and ext==".json": 
-            file_path = os.path.join(folder_path,file_name)
+            file_path = os.path.join(saved_logs_path,file_name)
             data = dataload(file_path)
             df = df_episodes_returns(data,smooth)
             df["Trainings"] = [name]*len(df["Episodes"])
@@ -81,7 +83,7 @@ def df_multiruns_episodes_returns( run_paths_list, smooth=False ):
     comb_df = pd.DataFrame()   
     for run_folder_path in run_paths_list: 
         df = df_run_episodes_returns(run_folder_path, smooth) 
-        env_id, run_id  = run_folder_path.split("/")[-2:] 
+        env_id, run_id  = run_folder_path.split("/")[-2:]  
         df["Runs"] = [env_id+"_"+run_id]*len(df["Trainings"])
         comb_df = pd.concat([comb_df, df])
     return comb_df 

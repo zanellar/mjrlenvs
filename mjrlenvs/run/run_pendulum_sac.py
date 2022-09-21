@@ -80,9 +80,8 @@ if __name__ == "__main__":
         run(Args())
     elif x == "e":
         tester = TestRun(Args)
-        # for name in 
-            # tester.loadmodel(name)
-            # mean, std = tester.evalpolicy(n_eval_episodes=5, render=False, save=True)
+        # for name in  
+            # mean, std = tester.eval_returns_model(name, n_eval_episodes=5, render=False, save=True)
         tester.plot(show=False)
     else:
         exit(f"Wrong Selection: {x}")

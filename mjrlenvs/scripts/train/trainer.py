@@ -32,7 +32,7 @@ class SaveTrainingConfigurations():
             file.close() 
     
     def add(self, name, config, res):   
-        with open(self.run_results_file_path, 'w') as file:
+        with open(self.run_results_file_path, 'a') as file:
             line = f"\n{name},"
             for v in config.values():
                 line += str(v) + "," 

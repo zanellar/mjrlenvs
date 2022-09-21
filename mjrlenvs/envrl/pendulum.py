@@ -13,12 +13,14 @@ class Pendulum(EnvGymBase):
               init_joint_config = [0],
               debug = False,
               folder_path = None,
-              env_name="pendulum"
+              env_name="pendulum",
+              hard_reset = False
               ):
     super(Pendulum, self).__init__()
 
 
     self.debug = debug 
+    self.hard_reset = hard_reset
     
     # Env params
     self.sim = MjEnv( 
@@ -42,11 +44,11 @@ class Pendulum(EnvGymBase):
     self.observation_space = spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32) 
     self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32) 
 
-  def reset(self, hard_reset=True, goal=None ):
+  def reset(self, goal=None ):
     """ 
     :return: (np.array) 
     """   
-    self.sim.reset(hard_reset=hard_reset )
+    self.sim.reset(hard_reset=self.hard_reset )
     self.obs = self.get_obs() 
     return self.obs
 
