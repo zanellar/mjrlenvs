@@ -3,8 +3,7 @@ import random
 from stable_baselines3 import HER, SAC, TD3, DDPG  
 from stable_baselines3.common.callbacks import CallbackList, BaseCallback 
 from mjrlenvs.scripts.args.pkgpaths import PkgPath
-from mjrlenvs.scripts.env.envutils import wrapenv 
-from mjrlenvs.scripts.plot.plotutils import *  
+from mjrlenvs.scripts.env.envutils import wrapenv  
  
  
 

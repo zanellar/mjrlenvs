@@ -50,9 +50,7 @@ def df_steps_rewards(data,episode):
             )
 
 def _smooth(timeframe, values, timesteps): 
-    newtimeframe = np.linspace(timeframe.min(), timeframe.max(), timesteps)
-    # smooth_returns = interp1d(timeframe, returns, kind='cubic')  
-    # returns = smooth_returns(newtimeframe)  
+    newtimeframe = np.linspace(timeframe.min(), timeframe.max(), timesteps)  
     spl = make_interp_spline(timeframe, values, k=3)  # type: BSpline
     values = spl(newtimeframe)
     timeframe = newtimeframe

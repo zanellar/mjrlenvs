@@ -1,6 +1,6 @@
-from cProfile import run
 import os 
-from mjrlenvs.scripts.plot.plotutils import *  
+import matplotlib.pyplot as plt
+import seaborn as sns  
 from mjrlenvs.scripts.plot.datautils import *
 from mjrlenvs.scripts.args.pkgpaths import PkgPath
 
@@ -33,39 +33,57 @@ class Plotter():
 
     ##############################################################################################################
 
-    def plot_avg_train_run_returns(self, env_name, run_id, save=True, show=True, save_path=None):  
+    def plot_avg_train_run_returns(self, env_name, run_id, labels=[], save=True, show=True ):  
  
         training_output_folder_path = os.path.join(self.out_train_folder, env_name, run_id)
         saved_training_logs_path = os.path.join(training_output_folder_path, "logs")    
-   
-        if save_path is None:
-            save_path = os.path.join(self.save_training_plots_folder_path, f"returns_train_{run_id}.pdf")
- 
-        mean_std_plt(
-            data = df_run_episodes_returns(logs_folder_path=saved_training_logs_path, smooth=True), 
-            title = 'Average Train Episode Return',
-            xaxis = "Episodes", 
-            value = "Returns",  
+    
+        save_path = os.path.join(self.save_training_plots_folder_path, f"returns_train_{run_id}.pdf")
+        data = df_run_episodes_returns(logs_folder_path=saved_training_logs_path, smooth=True)
+
+        plt.figure() 
+        sns.set(style="darkgrid", font_scale=1.5) 
+
+        ax = sns.lineplot(
+            data = data, 
+            x =  "Episodes", 
+            y = "Returns",   
             estimator = np.mean,
-            save = save, 
-            show = show, 
-            save_path = save_path
-        )
+            errorbar='sd'
+        )  
+
+        ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False, labels=labels)
+
+        if save:
+            plt.savefig(save_path, bbox_inches='tight', format="pdf") 
+        if show: 
+            plt.show()
   
     ##############################################################################################################
 
-    def plot_avg_train_multirun_returns(self, env_run_ids, save=True, show=True, plot_name=None): 
+    def plot_avg_train_multirun_returns(self, env_run_ids, labels=[], save=True, show=True, plot_name=None): 
         if plot_name is None:
             plot_name = str(len(env_run_ids)) 
         run_paths_list = [os.path.join(self.out_train_folder, env_run) for env_run in env_run_ids]  
-        mean_std_plt(
-            data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=True ), 
-            title = 'Average Train Episode Return Multirun',
-            xaxis = "Episodes", 
-            value = "Returns",  
+        data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=True )
+        save_path = os.path.join(self.save_multirun_training_plots_path, f"returns_train_multirun_{plot_name}.pdf")
+
+        plt.figure() 
+        sns.set(style="darkgrid", font_scale=1.5) 
+
+        ax = sns.lineplot(
+            data = data, 
+            x =  "Episodes", 
+            y = "Returns",  
             hue = "Runs",
             estimator = np.mean,
-            save = save, 
-            show = show, 
-            save_path = os.path.join(self.save_multirun_training_plots_path, f"returns_train_multirun_{plot_name}.pdf"), 
-        ) 
+            errorbar='sd'
+        )  
+
+        ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False, labels=labels)
+
+        if save:
+            plt.savefig(save_path, bbox_inches='tight', format="pdf") 
+        if show: 
+            plt.show()
+ 
