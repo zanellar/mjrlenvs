@@ -42,7 +42,7 @@ class Pendulum(EnvGymBase):
 
     # Observations 
     self.observation_space = spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32) 
-    self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32) 
+    # self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32) 
 
   def reset(self, goal=None ):
     """ 
