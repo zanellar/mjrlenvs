@@ -28,8 +28,7 @@ class SaveTrainingConfigurations():
             for k in self.args.AGENT_PARAMS.keys():
                 line += k + ","
             line += "mean,std"  
-            file.write(line)
-            file.close() 
+            file.write(line) 
     
     def add(self, name, config, res):   
         with open(self.run_results_file_path, 'a') as file:
@@ -37,8 +36,7 @@ class SaveTrainingConfigurations():
             for v in config.values():
                 line += str(v) + "," 
             line += f"{res[0]},{res[1]}"   
-            file.write(line)
-            file.close()
+            file.write(line) 
   
 
 ############################################################################################
@@ -78,7 +76,7 @@ def run(args):
     normalized_env_save_path = os.path.join(run_output_folder_path, "normalized_env.pickle") 
     save_training_logs_file_path = os.path.join(run_output_folder_path, "logs")
   
-    run_results_file_path = os.path.join(run_output_folder_path,"run_results.csv")  
+    run_results_file_path = os.path.join(run_output_folder_path,"training_results.csv")  
     save_training_data = SaveTrainingConfigurations(run_results_file_path, args)
  
     ################ CONFIGURATIONS   

@@ -17,8 +17,7 @@ class Pendulum(EnvGymBase):
               hard_reset = False
               ):
     super(Pendulum, self).__init__()
-
-
+ 
     self.debug = debug 
     self.hard_reset = hard_reset
     
@@ -28,21 +27,20 @@ class Pendulum(EnvGymBase):
       folder_path=folder_path,
       max_episode_length=max_episode_length,
       init_joint_config=init_joint_config 
-      )
-
-    # Initialize   
-    self.action = np.zeros(self.sim.action_shape)
-    self.obs = np.zeros(3)
-    self.reward = None 
-    self.done = False
-    self.info = {}
+      ) 
  
     # Actions  
     self.action_space = spaces.Box(low=-1.0, high=1.0, shape=self.sim.action_shape, dtype=np.float32)   
 
     # Observations 
     self.observation_space = spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32) 
-    # self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32) 
+    
+    # Initialize   
+    self.action = None
+    self.obs = None
+    self.reward = None 
+    self.done = False
+    self.info = {}
 
   def reset(self, goal=None ):
     """ 
