@@ -14,34 +14,13 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from mjrlenvs.scripts.args.pkgpaths import PkgPath  
 from mjrlenvs.scripts.cbs.logcbs import SaveTrainingLogsCallback  
 from mjrlenvs.scripts.cbs.tbcbs import Time2EndCallback 
-from mjrlenvs.scripts.env.envutils import wrapenv
-
-
-class SaveTrainingConfigurations():
-
-    def __init__(self, run_results_file_path, args): 
-        self.run_results_file_path = run_results_file_path
-
-        with open(self.run_results_file_path, 'w') as file:
-            self.args = args
-            line = "agent,"
-            for k in self.args.AGENT_PARAMS.keys():
-                line += k + ","
-            line += "mean,std"  
-            file.write(line) 
-    
-    def add(self, name, config, res):   
-        with open(self.run_results_file_path, 'a') as file:
-            line = f"\n{name},"
-            for v in config.values():
-                line += str(v) + "," 
-            line += f"{res[0]},{res[1]}"   
-            file.write(line) 
-  
+from mjrlenvs.scripts.env.envutils import wrapenv 
+from mjrlenvs.scripts.train.trainutils import SaveTrainingConfigurations
 
 ############################################################################################
 
 def run(args): 
+
  
     # PRINT RUN ARGUMENTS 
     print("@"*100)
@@ -216,7 +195,7 @@ def run(args):
             if args.SAVE_CHECKPOINTS: 
                 callbackslist.append(
                     CheckpointCallback(
-                        save_freq = args.EVAL_MODEL_FREQ, 
+                        save_freq = args.EVAL_MODEL_FREQ*args.EXPL_EPISODE_HORIZON, 
                         save_path = save_checkpoints_path
                     )
                 )
@@ -235,7 +214,7 @@ def run(args):
                 EvalCallback(
                     env_eval, 
                     best_model_save_path = best_model_folder_path, 
-                    eval_freq = args.EVAL_MODEL_FREQ,
+                    eval_freq = args.EVAL_MODEL_FREQ*args.EXPL_EPISODE_HORIZON,
                     n_eval_episodes = args.NUM_EVAL_EPISODES, 
                     deterministic = True, 
                     render = args.ENV_EVAL_RENDERING,

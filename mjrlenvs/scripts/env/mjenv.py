@@ -94,7 +94,7 @@ class MjEnv(object):
  
 
         ##### MODEL #### 
-        xml_path = os.path.join(env_data_folder, self.env_name, "arena.xml") 
+        xml_path = os.path.join(env_data_folder, self.env_name, "arena.xml")  
         self._mjmodel = mujoco_py.load_model_from_path(xml_path)
 
         ##### SIMULATOR ####

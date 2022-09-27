@@ -21,3 +21,25 @@ def linear_schedule(initial_value: float) -> Callable[[float], float]:
         return progress_remaining * initial_value
 
     return func
+  
+class SaveTrainingConfigurations():
+
+    def __init__(self, run_results_file_path, args): 
+        self.run_results_file_path = run_results_file_path
+
+        with open(self.run_results_file_path, 'w') as file:
+            self.args = args
+            line = "agent,"
+            for k in self.args.AGENT_PARAMS.keys():
+                line += k + ","
+            line += "mean,std"  
+            file.write(line) 
+    
+    def add(self, name, config, res):   
+        with open(self.run_results_file_path, 'a') as file:
+            line = f"\n{name},"
+            for v in config.values():
+                line += str(v) + "," 
+            line += f"{res[0]},{res[1]}"   
+            file.write(line) 
+  

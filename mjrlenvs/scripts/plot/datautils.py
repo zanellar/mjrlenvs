@@ -74,7 +74,7 @@ def df_run_episodes_returns(run_folder_path, smooth=False):
             data = dataload(file_path)
             df = df_episodes_returns(data,smooth)
             df["Trainings"] = [name]*len(df["Episodes"])
-            comb_df = pd.concat([comb_df, df])
+            comb_df = pd.concat([comb_df, df], ignore_index=True)
     return comb_df
 
 def df_multiruns_episodes_returns( run_paths_list, smooth=False ):  
@@ -83,6 +83,6 @@ def df_multiruns_episodes_returns( run_paths_list, smooth=False ):
         df = df_run_episodes_returns(run_folder_path, smooth) 
         env_id, run_id  = run_folder_path.split("/")[-2:]  
         df["Runs"] = [env_id+"_"+run_id]*len(df["Trainings"])
-        comb_df = pd.concat([comb_df, df])
+        comb_df = pd.concat([comb_df, df], ignore_index=True)
     return comb_df 
     

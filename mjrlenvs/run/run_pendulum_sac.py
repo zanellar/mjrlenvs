@@ -13,7 +13,7 @@ class Args(DefaultArgs):
     EXPL_EPISODE_HORIZON = 2500 # timesteps 
     EVAL_EPISODE_HORIZON = 500 # timesteps  
     TRAINING_EPISODES = 500 # episodes
-    EVAL_MODEL_FREQ = 10*EXPL_EPISODE_HORIZON 
+    EVAL_MODEL_FREQ = 10 # episodes
     NUM_EVAL_EPISODES = 5
     NUM_EVAL_EPISODES_BEST_MODEL = 1
     REPETE_TRAINING_TIMES = 20 # times

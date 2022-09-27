@@ -65,7 +65,7 @@ class Plotter():
         if plot_name is None:
             plot_name = str(len(env_run_ids)) 
         run_paths_list = [os.path.join(self.out_train_folder, env_run) for env_run in env_run_ids]  
-        data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=True )
+        data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=True ) 
         save_path = os.path.join(self.save_multirun_training_plots_path, f"returns_train_multirun_{plot_name}.pdf")
 
         plt.figure() 
