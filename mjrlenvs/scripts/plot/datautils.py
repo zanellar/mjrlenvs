@@ -77,12 +77,29 @@ def df_run_episodes_returns(run_folder_path, smooth=False):
             comb_df = pd.concat([comb_df, df], ignore_index=True)
     return comb_df
 
-def df_multiruns_episodes_returns( run_paths_list, smooth=False ):  
+def df_multiruns_episodes_returns( run_paths_list, smooth=False, run_label_list=[] ):  
     comb_df = pd.DataFrame()   
-    for run_folder_path in run_paths_list: 
+    for i,run_folder_path in enumerate(run_paths_list): 
         df = df_run_episodes_returns(run_folder_path, smooth) 
-        env_id, run_id  = run_folder_path.split("/")[-2:]  
-        df["Runs"] = [env_id+"_"+run_id]*len(df["Trainings"])
+        if len(run_label_list) > 0:
+            run_label = run_label_list[i]
+        else: 
+            env_id, run_id  = run_folder_path.split("/")[-2:]  
+            run_label = env_id+"_"+run_id   
+        df["Runs"] = [run_label]*len(df["Trainings"])
         comb_df = pd.concat([comb_df, df], ignore_index=True)
     return comb_df 
     
+def multirun_steps(run_paths_list):
+    num_steps_list = []
+    for i, run_folder_path in enumerate(run_paths_list): 
+        saved_logs_path = os.path.join(run_folder_path, "logs") 
+        run_num_steps_list = []
+        for file_name in os.listdir(saved_logs_path):  
+            name, ext = os.path.splitext(file_name)   
+            if name.startswith("energy_") and ext==".json": 
+                file_path = os.path.join(saved_logs_path, file_name)
+                data = dataload(file_path) 
+                run_num_steps_list += [num_steps(data)]
+        num_steps_list += [run_num_steps_list]
+    return num_steps_list
