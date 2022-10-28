@@ -97,9 +97,42 @@ def multirun_steps(run_paths_list):
         run_num_steps_list = []
         for file_name in os.listdir(saved_logs_path):  
             name, ext = os.path.splitext(file_name)   
-            if name.startswith("energy_") and ext==".json": 
+            if name.startswith("log_") and ext==".json": 
                 file_path = os.path.join(saved_logs_path, file_name)
                 data = dataload(file_path) 
                 run_num_steps_list += [num_steps(data)]
         num_steps_list += [run_num_steps_list]
     return num_steps_list
+
+
+###########################################################################
+###########################################################################
+###########################################################################
+
+def df_test_run_returns(run_folder_path, smooth=False): 
+    ''' DataFrame with the returns corresponding to each episode of all the tests in the given run'''
+    comb_df = pd.DataFrame()  
+    print(f"Loading logs from: {run_folder_path}")
+    saved_returns_test_path = os.path.join(run_folder_path, "returns_eval_run.json")  
+    data = dataload(saved_returns_test_path)
+    returns_values = [] 
+    for v in data.values(): 
+        val = np.array(v)
+        returns_values = np.concatenate([returns_values,val]) 
+    df = pd.DataFrame(dict(Tests = np.arange(len(returns_values)), Returns = returns_values))    
+    return df
+
+def df_test_multirun_returns(run_paths_list, smooth=False, run_label_list=[]):
+    comb_df = pd.DataFrame()   
+    for i,run_folder_path in enumerate(run_paths_list): 
+        df = df_test_run_returns(run_folder_path, smooth) 
+        if len(run_label_list) > 0:
+            run_label = run_label_list[i]
+        else: 
+            env_id, run_id  = run_folder_path.split("/")[-2:]  
+            run_label = env_id+"_"+run_id  
+        df["Runs"] = [run_label]*len(df["Tests"])
+        comb_df = pd.concat([comb_df, df], ignore_index=True)
+    return comb_df 
+
+ 

@@ -31,59 +31,30 @@ class Plotter():
         if not os.path.exists(self.save_multirun_training_plots_path):
             os.makedirs(self.save_multirun_training_plots_path)
 
+
     ##############################################################################################################
 
-    def plot_avg_train_run_returns(self, env_name, run_id, labels=[], save=True, show=True, ext="pdf" ):  
- 
-        training_output_folder_path = os.path.join(self.out_train_folder, env_name, run_id)
-        saved_training_logs_path = os.path.join(training_output_folder_path, "logs")    
-    
-        save_path = os.path.join(self.save_training_plots_folder_path, f"returns_train_{run_id}.{ext}")
-        data = df_run_episodes_returns(logs_folder_path=saved_training_logs_path, smooth=True)
+    def _line_plot(self,data,x,y,hue,xsteps,run_paths_list,labels,xlim,ylim,xlabels,ylabels,show,save,save_path,ext): 
 
         plt.figure() 
         sns.set(style="darkgrid", font_scale=1.5) 
 
         ax = sns.lineplot(
             data = data, 
-            x =  "Episodes", 
-            y = "Returns",   
-            estimator = np.mean,
-            errorbar='sd'
-        )  
-
-        ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False )
-
-        if save:
-            plt.savefig(save_path, bbox_inches='tight', format=ext) 
-        if show: 
-            plt.show()
-  
-    ##############################################################################################################
-
-    def plot_avg_train_multirun_returns(self, env_run_ids, labels=[], xsteps=False, save=True, show=True, plot_name=None, ext="pdf", xlim=[None,None], ylim=[None,None]):
-        if plot_name is None:
-            plot_name = str(len(env_run_ids)) 
-        run_paths_list = [os.path.join(self.out_train_folder, env_run) for env_run in env_run_ids]  
-        data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=xsteps, run_label_list=labels ) 
-        save_path = os.path.join(self.save_multirun_training_plots_path, f"returns_train_multirun_{plot_name}.{ext}")
-
-        plt.figure() 
-        sns.set(style="darkgrid", font_scale=1.5) 
-
-        ax = sns.lineplot(
-            data = data, 
-            x =  "Episodes", 
-            y = "Returns",  
-            hue = "Runs",
-            estimator = np.mean,
-            errorbar='sd'
+            x = x, 
+            y = y,  
+            hue = hue
         )  
 
         if xsteps:
             nstps = multirun_steps(run_paths_list)[0][0]
             ax.set_xticklabels(range(0,nstps))
             ax.set_xlabel('Steps')  
+        
+        if xlabels:
+            ax.set_xlabel(xlabels)  
+        if ylabels: 
+            ax.set_ylabel(ylabels)  
 
         ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False )
         if xlim[0] is not None and xlim[1] is not None:
@@ -92,8 +63,114 @@ class Plotter():
             plt.ylim(ylim[0],ylim[1])
 
 
-        if save:
+        if save: 
             plt.savefig(save_path, bbox_inches='tight', format=ext) 
         if show: 
             plt.show()
   
+    ##############################################################################################################
+ 
+    def _stat_plot(self,data,x,y,hue,plot_type,labels,xlabels,ylabels,show,save,save_path,ext):
+
+        plt.figure() 
+        sns.set(style="darkgrid", font_scale=1.5)  
+
+        if plot_type == "histplot": 
+            ax = sns.histplot(
+                data = data,  
+                x = y,  
+                hue = x,
+                kde = True,
+                bins = 10 
+            )   
+            labels.reverse()
+            ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False, labels=labels)
+
+        if plot_type == "boxplot": 
+            ax = sns.boxplot(
+                data = data,  
+                x = x, 
+                y = y,   
+                hue = hue,
+                orient = "v"
+            )
+            ax.set_xticklabels(labels)
+
+        if plot_type == "violinplot": 
+            ax = sns.violinplot(
+                data = data, 
+                x = x, 
+                y = y,   
+                hue = hue,
+                orient = "v"
+            )
+            ax.set_xticklabels(labels)
+  
+        if xlabels:
+            ax.set_xlabel(xlabels)  
+        if ylabels: 
+            ax.set_ylabel(ylabels)  
+
+ 
+        if save: 
+            plt.savefig(save_path, bbox_inches='tight', format=ext) 
+        if show: 
+            plt.tight_layout() 
+            plt.show()
+        plt.close()
+
+    ##############################################################################################################
+ 
+    def multirun_returns_train(self, env_run_ids, labels=[], xsteps=False, save=True, show=True, plot_name=None, ext="pdf", xlim=[None,None], ylim=[None,None],xlabels=None,ylabels=None):
+        if plot_name is None:
+            plot_name = str(len(env_run_ids)) 
+
+        run_paths_list = [os.path.join(self.out_train_folder, env_run) for env_run in env_run_ids]  
+        data = df_multiruns_episodes_returns(run_paths_list=run_paths_list, smooth=xsteps, run_label_list=labels ) 
+        save_path = os.path.join(self.save_multirun_training_plots_path, f"{plot_name}_multirun_returns_train.{ext}") 
+
+        self._line_plot(
+            data = data,
+            x =  "Episodes", 
+            y = "Returns",  
+            hue = "Runs",
+            xsteps = xsteps,
+            run_paths_list = run_paths_list,
+            labels = labels,
+            xlim = xlim,
+            ylim = ylim,
+            xlabels = xlabels,
+            ylabels = ylabels,
+            show = show,
+            save = save,
+            save_path = save_path,
+            ext = ext
+        )
+
+
+    ##############################################################################################################################################################
+ 
+    def multirun_returns_test(self, env_run_ids, labels=[], xlabels=None, ylabels=None,  save=True, show=True, plot_name=None, plot_type="histplot", ext="pdf"): 
+        if plot_name == None:
+            plot_name = str(len(env_run_ids))
+        run_paths_list = [os.path.join(self.out_test_folder, env_run) for env_run in env_run_ids]
+        
+        data = df_test_multirun_returns(run_paths_list=run_paths_list) 
+        save_path = os.path.join(self.save_multirun_testing_plots_path, f"{plot_name}_multirun_returns_test.{ext}")
+
+        self._stat_plot(
+            data = data,
+            x =  "Runs", 
+            y = "Returns",  
+            hue = None,  
+            plot_type = plot_type,
+            labels = labels, 
+            xlabels = xlabels,
+            ylabels = ylabels,
+            show = show,
+            save = save,
+            save_path = save_path,
+            ext = ext
+        )    
+
+ 
