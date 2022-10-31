@@ -102,7 +102,8 @@ class Plotter():
                 x = x, 
                 y = y,   
                 hue = hue,
-                orient = "v"
+                orient = "v",
+                bw = 0.2,  cut=0
             )
             ax.set_xticklabels(labels)
   
@@ -156,7 +157,7 @@ class Plotter():
         run_paths_list = [os.path.join(self.out_test_folder, env_run) for env_run in env_run_ids]
         
         data = df_test_multirun_returns(run_paths_list=run_paths_list) 
-        save_path = os.path.join(self.save_multirun_testing_plots_path, f"{plot_name}_multirun_returns_test.{ext}")
+        save_path = os.path.join(self.save_multirun_testing_plots_path, f"{plot_name}_{plot_type}_multirun_returns_test.{ext}")
 
         self._stat_plot(
             data = data,
