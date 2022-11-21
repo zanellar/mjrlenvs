@@ -49,21 +49,29 @@ def df_steps_rewards(data,episode):
                 )
             )
 
-def _smooth(timeframe, values, timesteps): 
-    newtimeframe = np.linspace(timeframe.min(), timeframe.max(), timesteps)  
+def _interpolate(timeframe, values, timesteps): 
+    newtimeframe = np.linspace(timeframe.min(), timeframe.max(), int(timesteps )) 
     spl = make_interp_spline(timeframe, values, k=3)  # type: BSpline
     values = spl(newtimeframe)
     timeframe = newtimeframe
     return timeframe, values 
 
-def df_episodes_returns(data, smooth=False):
+def _smooth(values, weight=0.5):
+    smoothed = np.array(values)
+    for i in range(1, smoothed.shape[0]):
+        smoothed[i] = smoothed[i-1] * weight + (1 - weight) * smoothed[i]
+    return smoothed
+  
+def df_episodes_returns(data, smooth=False, interpolate=False):
     returns = get_episodes_return(data)
     timeframe = np.arange(num_episodes(data))
+    if interpolate:
+        timeframe, returns = _interpolate(timeframe,returns,num_steps(data))
     if smooth:
-        timeframe, returns = _smooth(timeframe,returns,num_steps(data))
+        returns = _smooth(returns)
     return pd.DataFrame(dict(Episodes = timeframe, Returns = returns))  
 
-def df_run_episodes_returns(run_folder_path, smooth=False): 
+def df_run_episodes_returns(run_folder_path, smooth=False, interpolate=False): 
     comb_df = pd.DataFrame() 
     print(f"Loading logs from: {run_folder_path}")
     saved_logs_path = os.path.join(run_folder_path, "logs") 
@@ -72,15 +80,15 @@ def df_run_episodes_returns(run_folder_path, smooth=False):
         if name.startswith("log_") and ext==".json": 
             file_path = os.path.join(saved_logs_path,file_name)
             data = dataload(file_path)
-            df = df_episodes_returns(data,smooth)
+            df = df_episodes_returns(data,smooth=smooth, interpolate=interpolate)
             df["Trainings"] = [name]*len(df["Episodes"])
             comb_df = pd.concat([comb_df, df], ignore_index=True)
     return comb_df
 
-def df_multiruns_episodes_returns( run_paths_list, smooth=False, run_label_list=[] ):  
+def df_multiruns_episodes_returns( run_paths_list, smooth=False, interpolate=False, run_label_list=[] ):  
     comb_df = pd.DataFrame()   
     for i,run_folder_path in enumerate(run_paths_list): 
-        df = df_run_episodes_returns(run_folder_path, smooth) 
+        df = df_run_episodes_returns(run_folder_path, smooth=smooth, interpolate=interpolate ) 
         if len(run_label_list) > 0:
             run_label = run_label_list[i]
         else: 

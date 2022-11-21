@@ -68,7 +68,11 @@ class SaveTrainingLogsCallback(BaseLogCallback):
 
     def _on_step(self) -> bool:
         sample = self.training_env.env_method("get_sample") 
-        obs, action, reward, _, _ = sample[0]
+        obs, action, reward, done, info = sample[0]
+        
+        if done:
+            return True
+
         if self.save_all:
             self.episodes_data["steps"].append(self.num_timesteps)
             self.episodes_data["obs"].append(obs.tolist())

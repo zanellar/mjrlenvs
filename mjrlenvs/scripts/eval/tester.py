@@ -15,7 +15,11 @@ class TestRun():
         self.args = run_args 
         
         self.env = self.args.ENV_EVAL 
-        self.env = wrapenv(self.env, self.args, load_norm_env = True)  
+        self.env = wrapenv(
+            self.env, 
+            self.args, 
+            load_norm_env =  self.args.NORMALIZE_ENV is not None 
+        )  
 
         self.callback_list = CallbackList([])
         self.cb = None

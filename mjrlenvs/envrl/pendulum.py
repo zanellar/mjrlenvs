@@ -14,12 +14,14 @@ class Pendulum(EnvGymBase):
               debug = False,
               folder_path = None,
               env_name="pendulum",
-              hard_reset = False
+              hard_reset = False,
+              reward_id = 0,
               ):
     super(Pendulum, self).__init__()
  
     self.debug = debug 
     self.hard_reset = hard_reset
+    self.reward_id = reward_id
     
     # Env params
     self.sim = MjEnv( 
@@ -52,11 +54,12 @@ class Pendulum(EnvGymBase):
 
   def compute_reward(self):   
     sin_pos, cos_pos,  tanh_vel = self.get_obs() 
-    err_pos = abs(1. - sin_pos)
-    # reward = 1/(1. + 5*err_pos + tanh_vel)
+    err_pos = 1. - sin_pos  
     torque = self.action[0]
-    reward = -err_pos -0.1*abs(tanh_vel) -0.01*abs(torque)
-    # print(reward)
+    if self.reward_id == 0:
+      reward = -abs(err_pos) -0.1*abs(tanh_vel) -0.01*abs(torque)
+    elif self.reward_id == 1:
+      reward = 1/(1. + abs(err_pos) + 0.1*abs(tanh_vel) + 0.01*abs(torque)) 
     return reward
 
   def step(self, action):   
