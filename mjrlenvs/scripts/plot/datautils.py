@@ -120,7 +120,7 @@ def multirun_steps(run_paths_list):
 def df_test_run_returns(run_folder_path, smooth=False): 
     ''' DataFrame with the returns corresponding to each episode of all the tests in the given run''' 
     print(f"Loading logs from: {run_folder_path}")
-    saved_returns_test_path = os.path.join(run_folder_path, "returns_eval_run.json")  
+    saved_returns_test_path = os.path.join(run_folder_path, "returns_eval.json")  
     data = dataload(saved_returns_test_path)
     returns_values = [] 
     for v in data.values(): 

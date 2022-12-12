@@ -115,7 +115,7 @@ class TestRun():
         if plot:
             pass #TODO statannotation 
         if save:  
-            file_path =  os.path.join(self.testing_output_folder_path, "returns_eval_run.json") 
+            file_path =  os.path.join(self.testing_output_folder_path, "returns_eval.json") 
             with open(file_path, 'w') as f:
                 json.dump(data, f) 
         return data

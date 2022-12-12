@@ -32,6 +32,7 @@ class MjEnv(object):
         controller=None,   
         specs=None, 
         init_joint_config=None, 
+        init_joint_config_std_noise=0,
         folder_path=None,  
         max_episode_length=None 
         ):
@@ -112,6 +113,7 @@ class MjEnv(object):
     
         # starting position
         self._init_joint_config = init_joint_config
+        self._init_joint_config_std_noise = init_joint_config_std_noise
         if self._init_joint_config is not None:
             self.set_joints_pos(self._init_joint_config)
 
@@ -157,9 +159,9 @@ class MjEnv(object):
         return self.state, self.done
  
 
-    def reset(self, hard_reset=True, initi_pos=None, initi_displace=None):
+    def reset(self, hard_reset=True, initi_pos=None ):
         ''' reset the episode simulation.
-        The robot default initial position is the one specified in the constructor, with a displacement `initi_displace` if give.
+        The robot default initial position is the one specified in the constructor.
         Otherwise it can start from a new position `initi_pos`'''
 
         if hard_reset:  
@@ -177,9 +179,7 @@ class MjEnv(object):
         if initi_pos is not None:
             self.set_joints_pos(initi_pos)
         elif self._init_joint_config is not None:
-            initi_pos = self._init_joint_config
-            if initi_displace is not None:
-                initi_pos = list(np.array(initi_pos) + np.array(initi_displace))
+            initi_pos = self._init_joint_config 
             self.set_joints_pos(initi_pos) 
 
     def render(self, episode_step=0, do_first=False):
@@ -209,8 +209,9 @@ class MjEnv(object):
             r = joint_ranges[joint_names.index(name)]
             if joints == 'random':  
                 jval = random.uniform(r[0], r[1])
-            else:
-                jval = joints[i]
+            else: 
+                dis = np.random.randn()*self._init_joint_config_std_noise 
+                jval = joints[i] + dis
                 if jval<r[0]:
                     jval = r[0]
                 if jval>r[1]:

@@ -33,7 +33,7 @@ class Plotter():
 
 
     ##############################################################################################################
-
+    
     def _line_plot(self,data,x,y,hue,xsteps,run_paths_list,labels,xlim,ylim,xlabels,ylabels,show,save,save_path,ext): 
 
         plt.figure() 
@@ -58,6 +58,39 @@ class Plotter():
             ax.set_ylabel(ylabels)  
 
         ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False )
+        if xlim[0] is not None and xlim[1] is not None:
+            plt.xlim(xlim[0],xlim[1])
+        if ylim[0] is not None and ylim[1] is not None:
+            plt.ylim(ylim[0],ylim[1])
+
+
+        if save: 
+            if not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path)) 
+            plt.savefig(save_path, bbox_inches='tight', format=ext) 
+        if show: 
+            plt.show()
+  
+    ##############################################################################################################
+    
+    def _line_plot_nobs(self,maxvals,minvals,avgvals,labels,xlim,ylim,xlabels,ylabels,show,save,save_path,ext): 
+
+        plt.figure() 
+        sns.set(style="darkgrid", font_scale=1.5) 
+
+        for label in avgvals.keys():
+            plt.plot(range(len(avgvals[label])),avgvals[label], label = label)  
+            plt.fill_between(range(len(avgvals[label])),  maxvals[label], minvals[label], alpha = .25)
+  
+        if xlabels:
+            plt.xlabel(xlabels)  
+        if ylabels: 
+            plt.xlabel(ylabels)  
+
+        # plt.legend()
+        # plt.xlabel(xlabels)
+
+        plt.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False )
         if xlim[0] is not None and xlim[1] is not None:
             plt.xlim(xlim[0],xlim[1])
         if ylim[0] is not None and ylim[1] is not None:

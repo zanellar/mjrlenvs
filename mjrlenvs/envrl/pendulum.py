@@ -10,7 +10,8 @@ class Pendulum(EnvGymBase):
 
   def __init__(self, 
               max_episode_length=5000, 
-              init_joint_config = [0],
+              init_joint_config = [0], 
+              init_joint_config_std_noise = 0,
               debug = False,
               folder_path = None,
               env_name="pendulum",
@@ -28,7 +29,8 @@ class Pendulum(EnvGymBase):
       env_name=env_name, 
       folder_path=folder_path,
       max_episode_length=max_episode_length,
-      init_joint_config=init_joint_config 
+      init_joint_config=init_joint_config,
+      init_joint_config_std_noise=init_joint_config_std_noise
       ) 
  
     # Actions  
