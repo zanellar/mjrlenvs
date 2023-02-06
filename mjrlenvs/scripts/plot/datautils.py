@@ -63,6 +63,12 @@ def _smooth(values, weight=0.5):
     return smoothed
   
 def df_episodes_returns(data, smooth=False, interpolate=False):
+    '''
+    DataFrame with the returns corresponding to a specific episode  
+    @param data: data from the log file (of an episode)
+    @param smooth: whether to smooth the returns
+    @param interpolate: whether to interpolate the returns
+    '''
     returns = get_episodes_return(data)
     timeframe = np.arange(num_episodes(data))
     if interpolate:
@@ -72,6 +78,12 @@ def df_episodes_returns(data, smooth=False, interpolate=False):
     return pd.DataFrame(dict(Episodes = timeframe, Returns = returns))  
 
 def df_run_episodes_returns(run_folder_path, smooth=False, interpolate=False): 
+    '''
+    DataFrame with the returns corresponding to each episode of the given run
+    @param run_folder_path: path to the run folder
+    @param smooth: whether to smooth the returns
+    @param interpolate: whether to interpolate the returns
+    '''
     comb_df = pd.DataFrame() 
     print(f"Loading logs from: {run_folder_path}")
     saved_logs_path = os.path.join(run_folder_path, "logs") 
@@ -86,6 +98,13 @@ def df_run_episodes_returns(run_folder_path, smooth=False, interpolate=False):
     return comb_df
 
 def df_multiruns_episodes_returns( run_paths_list, smooth=False, interpolate=False, run_label_list=[] ):  
+    '''
+    DataFrame with the returns corresponding to each run of the given list of runs
+    @param run_paths_list: list of paths to the run folders
+    @param smooth: whether to smooth the returns
+    @param interpolate: whether to interpolate the returns
+    @param run_label_list: list of labels for the runs
+    '''
     comb_df = pd.DataFrame()   
     for i,run_folder_path in enumerate(run_paths_list): 
         df = df_run_episodes_returns(run_folder_path, smooth=smooth, interpolate=interpolate ) 
@@ -118,7 +137,11 @@ def multirun_steps(run_paths_list):
 ###########################################################################
 
 def df_test_run_returns(run_folder_path, smooth=False): 
-    ''' DataFrame with the returns corresponding to each episode of all the tests in the given run''' 
+    ''' 
+    DataFrame with the returns corresponding to each episode of all the tests in the given run
+    @param run_folder_path: path to the run folder
+    @param smooth: whether to smooth the returns
+    ''' 
     print(f"Loading logs from: {run_folder_path}")
     saved_returns_test_path = os.path.join(run_folder_path, "returns_eval.json")  
     data = dataload(saved_returns_test_path)
@@ -130,6 +153,12 @@ def df_test_run_returns(run_folder_path, smooth=False):
     return df
 
 def df_test_multirun_returns(run_paths_list, smooth=False, run_label_list=[]):
+    '''
+    DataFrame with the returns corresponding to each test of the given list of runs
+    @param run_paths_list: list of paths to the run folders
+    @param smooth: whether to smooth the returns
+    @param run_label_list: list of labels for the runs
+    '''
     comb_df = pd.DataFrame()   
     for i,run_folder_path in enumerate(run_paths_list): 
         df = df_test_run_returns(run_folder_path, smooth) 

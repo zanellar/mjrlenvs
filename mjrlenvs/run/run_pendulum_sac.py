@@ -6,6 +6,10 @@ from mjrlenvs.scripts.args.runargsbase import DefaultArgs
 from mjrlenvs.envrl.pendulum import Pendulum 
 
 class Args(DefaultArgs): 
+    '''
+    This class extends the DefaultArgs class and contains the arguments to be used for training and testing the model.
+    All the arguments are the same as in DefaultArgs, except for the ones specified below.
+    '''
 
     ############################## RUN #########################################################
 

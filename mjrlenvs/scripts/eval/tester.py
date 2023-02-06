@@ -9,8 +9,16 @@ from mjrlenvs.scripts.env.envutils import wrapenv
  
 
 class TestRun():
+    '''
+    This class is used to test the trained model.
+    '''
 
     def __init__(self, run_args, render=None) -> None:
+        '''
+        Initialize the tester class.  
+        @param run_args: the arguments to be used for training and testing the model
+        @param render: if True, the environment is rendered during testing
+        '''
 
         self.args = run_args 
         
@@ -66,6 +74,14 @@ class TestRun():
         self.cb = cb
 
     def eval_returns_model(self, model_id="random", n_eval_episodes=30, render=False, save=False):  # TODO call loadmodel inside the method
+        '''
+        Evaluate the model on the environment.
+        @param model_id: the id of the model to be tested. If "random", a random model is selected. If "first", the first model is selected. If "last", the last model is selected.
+        @param n_eval_episodes: the number of episodes to be used for evaluation
+        @param render: if True, the environment is rendered during testing
+        @param save: if True, the returns are saved in a file
+        @return: the list of returns
+        '''
         self._loadmodel(model_id)
         obs = self.env.reset()  
         returns_list = []

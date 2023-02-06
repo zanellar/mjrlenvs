@@ -20,7 +20,9 @@ from mjrlenvs.scripts.train.trainutils import SaveTrainingConfigurations
 ############################################################################################
 
 def run(args): 
-
+    '''
+    Run a training session
+    '''
  
     # PRINT RUN ARGUMENTS 
     print("@"*100)

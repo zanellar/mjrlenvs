@@ -1,12 +1,24 @@
 import os 
+import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42 
 import seaborn as sns  
 from mjrlenvs.scripts.plot.datautils import *
 from mjrlenvs.scripts.args.pkgpaths import PkgPath
 
 class Plotter():
+    '''
+    This class contains the methods to plot the results of the training and testing of the model.
+    '''
 
     def __init__(self, out_train_folder=None,out_test_folder=None, plot_folder=None) -> None: 
+        '''
+        This method initializes the Plotter class by setting the paths of the folders where the results of the training and testing are saved.
+        @param out_train_folder: path of the folder where the results of the training are saved.
+        @param out_test_folder: path of the folder where the results of the testing are saved.
+        @param plot_folder: path of the folder where the plots are saved.
+        '''
  
         ###### INPUT FOLDERS PATH
         self.out_train_folder = PkgPath.OUT_TRAIN_FOLDER if out_train_folder is None else out_train_folder   
@@ -34,7 +46,7 @@ class Plotter():
 
     ##############################################################################################################
     
-    def _line_plot(self,data,x,y,hue,xsteps,run_paths_list,labels,xlim,ylim,xlabels,ylabels,show,save,save_path,ext): 
+    def _line_plot(self,data,x,y,hue,xsteps,run_paths_list,labels,xlim,ylim,save_path,xlabels=None,ylabels=None,show=False,save=True,ext="pdf",fontsize=25): 
 
         plt.figure() 
         sns.set(style="darkgrid", font_scale=1.5) 
@@ -44,7 +56,7 @@ class Plotter():
             x = x, 
             y = y,  
             hue = hue,
-            errorbar=('ci', 99.7)
+            # errorbar=('ci', 99.7)
         )  
 
         if xsteps:
@@ -58,6 +70,8 @@ class Plotter():
             ax.set_ylabel(ylabels)  
 
         ax.legend(loc="lower center", bbox_to_anchor=(.5, 1), ncol=len(labels), frameon=False )
+        plt.setp(ax.get_legend().get_texts(), fontsize=str(fontsize)) # for legend text
+
         if xlim[0] is not None and xlim[1] is not None:
             plt.xlim(xlim[0],xlim[1])
         if ylim[0] is not None and ylim[1] is not None:
@@ -161,6 +175,22 @@ class Plotter():
     ##############################################################################################################
  
     def multirun_returns_train(self, env_run_ids, labels=[], xsteps=False, smooth=False, save=True, show=True, plot_name=None, sub_folder_name="", ext="pdf", xlim=[None,None], ylim=[None,None],xlabels=None,ylabels=None):
+        '''
+        Plot the returns of multiple training runs as a line plot. 
+        @param env_run_ids: list of run ids to plot
+        @param labels: list of labels for the runs
+        @param xsteps: if True, plot the returns at each step, otherwise plot the returns at each episode   
+        @param smooth: if True, smooth the returns with a moving average
+        @param save: if True, save the plot
+        @param show: if True, show the plot
+        @param plot_name: name of the plot
+        @param sub_folder_name: name of the subfolder where to save the plot
+        @param ext: extension of the plot
+        @param xlim: x axis limits
+        @param ylim: y axis limits
+        @param xlabels: x axis labels
+        @param ylabels: y axis labels
+        '''
         if plot_name is None:
             plot_name = str(len(env_run_ids)) 
 
@@ -190,6 +220,19 @@ class Plotter():
     ##############################################################################################################################################################
  
     def multirun_returns_test(self, env_run_ids, labels=[], xlabels=None, ylabels=None,  save=True, show=True, plot_name=None, sub_folder_name="", plot_type="histplot", ext="pdf"): 
+        '''
+        Plot the returns of multiple testing runs as a line plot.
+        @param env_run_ids: list of run ids to plot
+        @param labels: list of labels for the runs
+        @param xlabels: x axis labels
+        @param ylabels: y axis labels
+        @param save: if True, save the plot
+        @param show: if True, show the plot
+        @param plot_name: name of the plot
+        @param sub_folder_name: name of the subfolder where to save the plot
+        @param plot_type: type of plot to use
+        @param ext: extension of the plot
+        '''
         if plot_name == None:
             plot_name = str(len(env_run_ids))
         run_paths_list = [os.path.join(self.out_test_folder, env_run) for env_run in env_run_ids]
