@@ -16,7 +16,7 @@ class TestRun():
     def __init__(self, run_args, render=None) -> None:
         '''
         Initialize the tester class.  
-        @param run_args: the arguments to be used for training and testing the model
+        @param run_args: (class) the arguments to be used for training and testing the model  (see /scripts/args/runargsbase.py)
         @param render: if True, the environment is rendered during testing
         '''
 

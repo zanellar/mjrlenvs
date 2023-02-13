@@ -3,6 +3,10 @@ import gym
 
 class EnvGymBase(gym.Env): 
 
+  '''
+  Base class for all gym environments
+  '''
+
   def __init__(self,  
               debug = False
               ):

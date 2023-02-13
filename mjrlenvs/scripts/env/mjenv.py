@@ -37,12 +37,14 @@ class MjEnv(object):
         max_episode_length=None 
         ):
         '''
-        --- arguments ---
+        This class is used to create a MuJoCo environment.
 
-        @env_name: (string) name of an environment   
-        @init_joint_config: if None it starts from model defined default position | joints (list) starts from a specific joints config | "random" (string) starts from random position
-        @folder_path: (string) path to the folder where the xml file is contained
-        @episode_terminator: instance of class EpisodeTerminator with method done(state, time) that returns a True when end the current episode
+        
+
+        @param env_name: (string) name of an environment   
+        @param init_joint_config: if None it starts from model defined default position | joints (list) starts from a specific joints config | "random" (string) starts from random position
+        @param folder_path: (string) path to the folder where the xml file is contained
+        @param episode_terminator: instance of class EpisodeTerminator with method done(state, time) that returns a True when end the current episode
 
         --- variables ---
 
@@ -221,21 +223,40 @@ class MjEnv(object):
         # self._sim.step()
 
     def set_site_pos(self, name, pos):
+        ''' 
+        set the position of a site in the simulation
+        @param name: name of the site
+        @param pos: position of the site
+        '''
         self._site_forced[name] = pos
         site_id = self._sim.model.site_name2id(name)
         self._sim.data.site_xpos[site_id] = pos
 
     def set_body_pos(self, name, pos):
+        '''
+        set the position of a body in the simulation
+        @param name: name of the body
+        @param pos: position of the body
+        '''
         self._body_forced[name] = pos
         body_id = self._sim.model.body_name2id(name)
         self._sim.data.body_xpos[body_id] = pos
         
     def get_obj_pos(self, objname, objtype="site", objvar="xpos"):  
+        '''
+        get the position of an object in the simulation
+        @param objname: name of the object
+        @param objtype: type of the object (site, body, geom, joint, ...)
+        @param objvar: variable of the object (xpos, xmat, ...)
+        '''
         attr_get_value = getattr(self._sim.data,f"get_{objtype}_{objvar}") 
         pos = attr_get_value(objname)  
         return pos
 
     def get_joints_pos(self, ids=None):   
+        '''
+        Get the position of the joints
+        '''
         if ids is None:
             joints_pos = self._sim.data.qpos
         else:
@@ -243,6 +264,10 @@ class MjEnv(object):
         return joints_pos
 
     def get_joints_vel(self, ids=None):   
+        '''
+        Get the velocity of the joints
+        '''
+
         if ids is None:
             joints_vel = self._sim.data.qvel
         else:
@@ -250,7 +275,9 @@ class MjEnv(object):
         return joints_vel
  
     def get_state(self):
-        ''' return the states from the given list (states_list) '''
+        ''' 
+        Returns the states from the given list (states_list) 
+        '''
         state = [] 
         sim_states = self._sim.get_state() 
         for sname, sdata in self._states_specs.items():
@@ -272,7 +299,10 @@ class MjEnv(object):
         return state
    
     def env_fixed_frame(self, name=None):
-        ''' returns the fixed reference frame as a list [x,y,z,qw,qx,qy,qz]'''
+        ''' 
+        Returns the fixed reference frame as a list [x,y,z,qw,qx,qy,qz]
+        @param name: name of the body to be used as reference frame
+        '''
         frame = []
         if name is None:
             frame = [0, 0, 0, 1, 0, 0, 0]

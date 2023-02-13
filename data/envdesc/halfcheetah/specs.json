@@ -1,5 +1,5 @@
 {
-    "_info": "pendulum", 
+    "_info": "halfcheetah", 
     "states": {
         "pos_rootz":    {"id": "joint", "type": "joint", "var":"qpos", "dim": 1},
         "pos_rooty":   {"id": "joint", "type": "joint", "var":"qpos", "dim": 1},

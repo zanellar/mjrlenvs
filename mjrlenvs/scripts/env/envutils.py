@@ -5,6 +5,13 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 from mjrlenvs.scripts.args.pkgpaths import PkgPath
 
 def wrapenv(env,args,load_norm_env=False): 
+    """
+    Vectorized (and if args.NORMALIZE_ENV is not None, also normalized) environment wrapper.
+    @param env: (gym.Env) The environment to wrap
+    @param args: (class) The parsed arguments 
+    @param load_norm_env: (bool) Whether to load the normalized environment or not
+    @return: (gym.Env) The wrapped environment
+    """
 
     env = Monitor(env)                      # A monitor wrapper for Gym environments, it is used to know the episode reward, length, time and other data
     env = DummyVecEnv([lambda : env])       # Needed for all environments (e.g. used for mulit-processing)

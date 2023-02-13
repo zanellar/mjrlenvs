@@ -21,7 +21,7 @@ from mjrlenvs.scripts.train.trainutils import SaveTrainingConfigurations
 
 def run(args): 
     '''
-    Run a training session
+    Run a training session using the arguments provided as a class (see /scripts/args/runargsbase.py)
     '''
  
     # PRINT RUN ARGUMENTS 
