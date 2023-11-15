@@ -56,3 +56,8 @@ The best model, tensorboard output and a .txt file with parameters and mean rewa
 
 * fix trainer.py and runs with it
 * fix panda
+
+
+## Possible Errors Solved
+* Error: 'Import error. Trying to rebuild mujoco_py.' or 'GLIBCXX_3.4.30 not found'
+Solution: delete file '/home/riccardo/miniconda3/envs/rl0/lib/libstdc++.so.6'.  https://stackoverflow.com/questions/72205522/glibcxx-3-4-29-not-found
