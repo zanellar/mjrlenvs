@@ -106,6 +106,7 @@ class MjEnv(object):
         self.simulation_frequency = 1./self._mjmodel.opt.timestep
         self.control_frequency = self._env_params["control_frequency"]
         nsubsteps = round(self.simulation_frequency/self._env_params["control_frequency"])
+        print(f"nsubsteps={nsubsteps}")
         assert nsubsteps > 0, f"expected 'control_frequency'({self.control_frequency})<='simulation_frequency'({self.simulation_frequency}) " 
 
         self._sim = mujoco_py.MjSim(self._mjmodel, nsubsteps=nsubsteps)
@@ -251,7 +252,7 @@ class MjEnv(object):
         '''
         attr_get_value = getattr(self._sim.data,f"get_{objtype}_{objvar}") 
         pos = attr_get_value(objname)  
-        return pos
+        return pos.copy()
 
     def get_joints_pos(self, ids=None):   
         '''
@@ -261,7 +262,7 @@ class MjEnv(object):
             joints_pos = self._sim.data.qpos
         else:
             joints_pos = self._sim.data.qpos[ids]
-        return joints_pos
+        return joints_pos.copy()
 
     def get_joints_vel(self, ids=None):   
         '''
@@ -272,7 +273,7 @@ class MjEnv(object):
             joints_vel = self._sim.data.qvel
         else:
             joints_vel = self._sim.data.qvel[ids]
-        return joints_vel
+        return joints_vel.copy()
  
     def get_state(self):
         ''' 
@@ -296,7 +297,7 @@ class MjEnv(object):
 
             state.append(sval)
         state = [item for sublist in state for item in sublist]  
-        return state
+        return state.copy()
    
     def env_fixed_frame(self, name=None):
         ''' 
