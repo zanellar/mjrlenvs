@@ -173,8 +173,7 @@ class MjEnv(object):
             if self._viewer is not None:
                 glfw.destroy_window(self._viewer.window) 
                 self._viewer = mujoco_py.MjViewer(self._sim)
-
-            
+ 
         self.episode_index += 1
         self.episode_time = 0
         self.done = False
@@ -274,6 +273,18 @@ class MjEnv(object):
         else:
             joints_vel = self._sim.data.qvel[ids]
         return joints_vel.copy()
+    
+
+    def get_joints_ft(self, ids=None):   
+        '''
+        Get the force/torque of the joints
+        '''
+
+        if ids is None:
+            joints_ft = self._sim.data.qfrc_actuator
+        else:
+            joints_ft = self._sim.data.qfrc_actuator[ids]
+        return joints_ft.copy()
  
     def get_state(self):
         ''' 

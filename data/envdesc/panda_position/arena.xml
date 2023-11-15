@@ -8,10 +8,10 @@
             tolerance="1e-10"
             impratio="20"
             gravity="0 0 -0.91" />
-    <size njmax="600" nconmax="150" nstack="300000" nuser_actuator="5"/>
-    <!-- <size nuser_actuator="5"/> -->
-
+    <size njmax="600" nconmax="150" nstack="300000"/> <!-- nuser_actuator="5" -->
+ 
     <include file="/assets/assets.xml"/>
+    <include file="/assets/sensors.xml"/>
     <include file='/assets/scene.xml'/>
     <compiler meshdir=""/>
 
